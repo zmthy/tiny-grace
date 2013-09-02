@@ -1,0 +1,86 @@
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage{fullpage}
+
+\usepackage{amsmath}
+\usepackage{bussproofs}
+
+\usepackage{syntax}
+
+\def\name{Tiny Grace }
+\def\version{0.1.0}
+
+\def\thetitle{\name Formal Specification}
+\def\theauthor{Timothy Jones}
+
+\usepackage[pdftitle={\thetitle}, pdfauthor={\theauthor}]{hyperref}
+
+\grammarindent7.8em
+\renewcommand{\grammarlabel}[2]{\textit{#1}\hfill#2}
+\renewcommand{\syntleft}{\itshape}
+\renewcommand{\syntright}{}
+
+\title{\thetitle\\\normalsize\vspace{0.5em}Version \version\vspace{-0.5em}}
+\author{\theauthor}
+
+\bibliographystyle{acm}
+
+\begin{document}
+\maketitle\vspace{-2em}
+
+\section{Introduction}
+
+\name is a tiny subset of the Grace programming language, in the spirit of
+Featherweight Java \cite{fj}.
+
+
+\section{Syntax}
+
+\begin{figure}[h]
+
+\begin{grammar}
+<module> ::= [<dialect>] \{<type-decl>\} \{<method-decl>\}
+
+<dialect> ::= "dialect {" \{<method-decl>\} "}"
+
+<type-decl> ::= "type" <ident> "=" <type>
+
+<object-body> ::= [<inherits>] \{<method-decl>\}
+
+<inherits> ::= "inherits" <expr>
+
+<method-decl> ::= "method" <method-head> "{" <expr> "}"
+
+<method-head> ::= (<ident> | <signature>) $\to$ <type>
+
+<signature> ::= <ident> "(" <param> \{"," <param>\} ")" [<signature>]
+
+<param> ::= <ident> ":" <type>
+
+<type> ::= <ident>
+    \alt "{" \{<method-head>\} "}"
+
+<expr> ::= <ident>
+    \alt "self"
+    \alt "object {" <object-body> "}"
+    \alt [<expr> "."] <ident> "(" [<expr> \{"," <expr>\}] ")"
+
+<ident> ::= "a".."Z"\{"a".."Z"|"0".."9"\}\{$^\prime$\}
+\end{grammar}
+
+\label{fig:syntax}
+\caption{The syntax for \name}
+
+\end{figure}
+
+
+\section{Reduction}
+
+
+\section{Typing Rules}
+
+
+\bibliography{references}
+
+\end{document}
+
