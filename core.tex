@@ -1,24 +1,33 @@
 \documentclass[a4paper, 11pt]{article}
 
 \usepackage{fullpage}
+\usepackage[T1]{fontenc}
 
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{bussproofs}
 
 \usepackage{syntax}
 
-\def\name{Tiny Grace }
+
+% Document information
+
 \def\version{0.1.0}
 
-\def\thetitle{\name Formal Specification}
+\def\thetitle{Tiny Grace Formal Specification}
 \def\theauthor{Timothy Jones}
 
 \usepackage[pdftitle={\thetitle}, pdfauthor={\theauthor}]{hyperref}
 
-\grammarindent7.8em
-\renewcommand{\grammarlabel}[2]{\textit{#1}\hfill#2}
-\renewcommand{\syntleft}{\itshape}
-\renewcommand{\syntright}{}
+
+% Math definitions
+
+\def\M{\mathcal{M}}
+\def\O{\mathcal{O}}
+
+\def\bo{{\sffamily\{}}
+\def\bc{{\sffamily\}}}
+
 
 \title{\thetitle\\\normalsize\vspace{0.5em}Version \version\vspace{-0.5em}}
 \author{\theauthor}
@@ -30,54 +39,148 @@
 
 \section{Introduction}
 
-\name is a tiny subset of the Grace programming language, in the spirit of
-Featherweight Java \cite{fj}.
+Tiny Grace is a tiny subset of the Grace programming language, in the spirit of
+Featherweight Java \cite{fj}.  It currently aims to resolve the following
+issues:
+
+\begin{itemize}
+
+    \item Simple reduction semantics
+
+    \item Static typing
+
+\end{itemize}
+
+\noindent Future versions will aim to extend the formalism to address:
+
+\begin{itemize}
+
+    \item Inheritance semantics and typing
+
+    \item Dialect semantics
+
+    \item Statements and early returns
+
+    \item Block semantics and typing
+
+    \item Dynamic typing and runtime semantics
+
+\end{itemize}
+
+\noindent Tiny Grace intentionally avoids the following issues:
+
+\begin{itemize}
+
+    \item Concrete syntax and sugar, such as mixfix declarations and classes
+
+    \item Variables and the heap
+
+    \item Generic and inferred types
+
+    \item Annotations and reflection
+
+\end{itemize}
+
+\noindent The current version of Tiny Grace is much simpler than even
+Featherweight Java, as it does not feature constructors, fields or casts.
+Instead of these features, it must implement scope, as objects can be nested.
 
 
 \section{Syntax}
 
-\begin{figure}[h]
+\def\*#1*{$\overline{#1}$}
+
+The abstract syntax for Tiny Grace can be found in
+figure~\ref{fig:abstract-syntax}.  A Tiny Grace program consists of an object
+body at the top level, which is a set of method declarations.  The metavariable
+$\O$ ranges over object bodies; $x$ over variable names; $\tau$ and $\sigma$ over
+types; $\M$ over method headers, $m$ over method names, and $e$ over expressions.
+
+We write \*e* to indicate a possibly empty sequence of comma-separated
+expressions $e_1, \dots, e_n$, as well as for method header parameters \*x :
+\tau*.  We also write \*\M* to indicate a possibly empty sequence of
+non-separated method headers $\M_1 \dots \M_n$, as well as for method declarations
+in an object body.
+
+\begin{figure}
+
+\def\*#1*{$\overline{\text{#1}}$}
+\def\<#1>{$#1$}
+
+\grammarindent3.4em
+\renewcommand{\grammarlabel}[2]{$#1$\hfill#2}
+\renewcommand{\syntleft}{\itshape}
+\renewcommand{\syntright}{}
+\renewcommand{\ulitleft}{\sffamily\bfseries}
+\renewcommand{\litleft}{\sffamily}
+\renewcommand{\litright}{}
 
 \begin{grammar}
-<module> ::= [<dialect>] \{<type-decl>\} \{<method-decl>\}
+<\O> ::= \*"method" $\M$ \bo~\<e> \bc*
 
-<dialect> ::= "dialect {" \{<method-decl>\} "}"
+<\M> ::= <m>`('\*\<x> $:$ $\tau$*`)' $\to$ $\tau$
 
-<type-decl> ::= "type" <ident> "=" <type>
+<\tau> ::= \bo~\*$\M$* \bc
 
-<object-body> ::= [<inherits>] \{<method-decl>\}
-
-<inherits> ::= "inherits" <expr>
-
-<method-decl> ::= "method" <method-head> "{" <expr> "}"
-
-<method-head> ::= (<ident> | <signature>) $\to$ <type>
-
-<signature> ::= <ident> "(" <param> \{"," <param>\} ")" [<signature>]
-
-<param> ::= <ident> ":" <type>
-
-<type> ::= <ident>
-    \alt "{" \{<method-head>\} "}"
-
-<expr> ::= <ident>
-    \alt "self"
-    \alt "object {" <object-body> "}"
-    \alt [<expr> "."] <ident> "(" [<expr> \{"," <expr>\}] ")"
-
-<ident> ::= "a".."Z"\{"a".."Z"|"0".."9"\}\{$^\prime$\}
+<e> ::= <x> | <e>`.'<m>(\*\<e>*) | "object" \bo~$\O$ \bc
 \end{grammar}
 
-\label{fig:syntax}
-\caption{The syntax for \name}
+\label{fig:abstract-syntax}
+
+\caption{Tiny Grace abstract syntax}
 
 \end{figure}
 
 
 \section{Reduction}
 
+Given a Tiny Grace program, we can reduce expressions as though they appeared at
+the bottom of the outer object body.
+
+\begin{figure}[h]
+\centering
+
+\def\*#1*{\overline{#1}}
+
+\AxiomC{$e \to e^\prime$}
+\RightLabel{(Receiver)}
+\UnaryInfC{$e.m(\*e_i*) \to e^\prime.m(\*e_i*)$}
+\DisplayProof
+
+\vspace{1em}
+
+\AxiomC{$e_i \to e_i^\prime$}
+\RightLabel{(Argument)}
+\UnaryInfC{$e.m(\dots, e_i, \dots) \to e.m(\dots, e_i^\prime, \dots)$}
+\DisplayProof
+
+\label{fig:reduction}
+\caption{Tiny Grace reduction rules}
+
+\end{figure}
+
 
 \section{Typing Rules}
+
+\begin{figure}
+\centering
+
+\def\sub{<\kern-1pt:}
+\def\*#1*{\overline{#1}}
+
+\AxiomC{$\tau \sub \tau^\prime$}
+\AxiomC{$\tau^\prime \sub \sigma$}
+\BinaryInfC{$\tau \sub \sigma$}
+\DisplayProof
+\hspace{1em}
+\AxiomC{$\*\M* \subseteq \*\M^\prime*$}
+\UnaryInfC{\bo~$\*\M^\prime*$ \bc~$\sub$ \bo~$\*\M*$ \bc}
+\DisplayProof
+
+\label{fig:subtyping}
+\caption{Tiny Grace subtyping rules}
+
+\end{figure}
 
 
 \bibliography{references}

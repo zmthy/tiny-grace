@@ -4,4 +4,5 @@ core.pdf: *.tex
 clean:
 	latexmk -C
 	rm -f core.bbl
+	rm -f .nfs*
 
