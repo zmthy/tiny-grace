@@ -1,8 +1,8 @@
-core.pdf: *.tex
-	latexmk -pdf core
+tiny-grace.pdf: *.tex
+	latexmk -pdf tiny-grace
 
 clean:
 	latexmk -C
-	rm -f core.bbl
+	rm -f tiny-grace.bbl
 	rm -f .nfs*
 

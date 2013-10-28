@@ -17,13 +17,20 @@
 \def\thetitle{Tiny Grace Formal Specification}
 \def\theauthor{Timothy Jones}
 
-\usepackage[pdftitle={\thetitle}, pdfauthor={\theauthor}]{hyperref}
+\usepackage[
+pdftitle={\thetitle},
+pdfauthor={\theauthor},
+colorlinks,
+urlcolor=blue,
+linkcolor=blue,
+citecolor=blue
+]{hyperref}
 
 
 % Math definitions
 
 \def\M{\mathcal{M}}
-\def\O{\mathcal{O}}
+\def\B{\mathcal{B}}
 
 \def\bo{{\sffamily\{}}
 \def\bc{{\sffamily\}}}
@@ -93,14 +100,14 @@ Instead of these features, it must implement scope, as objects can be nested.
 The abstract syntax for Tiny Grace can be found in
 figure~\ref{fig:abstract-syntax}.  A Tiny Grace program consists of an object
 body at the top level, which is a set of method declarations.  The metavariable
-$\O$ ranges over object bodies; $x$ over variable names; $\tau$ and $\sigma$ over
+$\B$ ranges over object bodies; $x$ over variable names; $\tau$ and $\sigma$ over
 types; $\M$ over method headers, $m$ over method names, and $e$ over expressions.
 
 We write \*e* to indicate a possibly empty sequence of comma-separated
 expressions $e_1, \dots, e_n$, as well as for method header parameters \*x :
-\tau*.  We also write \*\M* to indicate a possibly empty sequence of
-non-separated method headers $\M_1 \dots \M_n$, as well as for method declarations
-in an object body.
+\tau*.  We also write \*\M* to indicate a possibly empty set of non-separated
+method headers $\M_1 \dots \M_n$, as well as for method declarations in an
+object body.
 
 \begin{figure}
 
@@ -116,13 +123,13 @@ in an object body.
 \renewcommand{\litright}{}
 
 \begin{grammar}
-<\O> ::= \*"method" $\M$ \bo~\<e> \bc*
+<\B> ::= \*"method" $\M$ \bo~\<e> \bc*
 
 <\M> ::= <m>`('\*\<x> $:$ $\tau$*`)' $\to$ $\tau$
 
 <\tau> ::= \bo~\*$\M$* \bc
 
-<e> ::= <x> | <e>`.'<m>(\*\<e>*) | "object" \bo~$\O$ \bc
+<e> ::= <x> | <e>`.'<m>(\*\<e>*) | "object" \bo~$\B$ \bc
 \end{grammar}
 
 \label{fig:abstract-syntax}
