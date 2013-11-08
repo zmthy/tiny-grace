@@ -37,22 +37,29 @@
 \def\M{\mathcal{M}}
 \def\O{\mathcal{O}}
 
+\def\G{\Gamma}
+\newcommand{\ctx}[3]{#1 \vdash #2 : #3}
+\newcommand{\gctx}[2]{\ctx{\G}{#1}{#2}}
+\newcommand{\ectx}[2]{\ctx{\varnothing}{#1}{#2}}
+
 \def\sub{<\kern-1pt:}
 
-\def\bo{{\sffamily\{}}
-\def\bc{{\sffamily\}}}
-\def\po{{\sffamily(}}
-\def\pc{{\sffamily)}}
+\def\bo{{\sffamily\upshape\{}}
+\def\bc{{\sffamily\upshape\}}}
+\def\po{{\sffamily\upshape(}}
+\def\pc{{\sffamily\upshape)}}
 
-\newcommand{\object}[1]{\text{{\sffamily\bfseries object}\bo}#1\text{\bc}}
-\newcommand{\methh}[2]{\text{{\sffamily\bfseries method} }#1\ \text{\bo}#2\text{\bc}}
+\newcommand{\key}[1]{{\sffamily\bfseries#1}}
+\newcommand{\object}[1]{\text{\key{object}\bo}#1\text{\bc}}
+\newcommand{\methh}[2]{\text{\key{method} }#1\ \text{\bo}#2\text{\bc}}
 \newcommand{\method}[4]{\methh{#1\text{\po}#2\text{\pc }\to #3}{#4}}
 \newcommand{\type}[1]{\text{\bo}#1\text{\bc}}
-\newcommand{\self}{\text{\sffamily\bfseries self}}
+\newcommand{\self}{\text{\key{self}}}
 
 \def\rto{\overset{_\mathcal{R}}\longrightarrow}
 \def\rtot{\overset{_{\mathcal{R}^*}}{\longrightarrow}}
 \def\sto{\overset{_\mathcal{S}}\longrightarrow}
+\def\stot{\overset{_{\mathcal{S}^+}}\longrightarrow}
 
 \def\xs{\overset{_\text{\sffamily\bfseries s}}x}
 
@@ -102,8 +109,8 @@
 \theoremstyle{tcase}
 \newtheorem*{tcase}{Case}
 
-\newtheoremstyle{lcase}{}{}{\addtolength{\leftskip}{2em}}{}{}{.}{.5em}
-    {\thmname{\textit{#1}}\thmnote{\ \textsc{#3}}}
+\newtheoremstyle{lcase}{}{}{\addtolength{\leftskip}{3em}}{-1em}{}{}{.5em}
+    {\thmname{\textit{#1}}\thmnote{\ \textsc{#3}}\hspace*{\fill}\\}
 \theoremstyle{lcase}
 \newtheorem*{lcase}{Case}
 
@@ -124,9 +131,9 @@ issues:
 
 \begin{itemize}
 
-    \item Simple reduction semantics
+\item Simple reduction semantics
 
-    \item Static typing
+\item Static typing
 
 \end{itemize}
 
@@ -134,17 +141,19 @@ issues:
 
 \begin{itemize}
 
-    \item Safe casting with match-case
+\item Safe casting with match-case
 
-    \item Inheritance semantics and typing
+\item Type aliases for recursive types
 
-    \item Dialect semantics
+\item Inheritance semantics and typing
 
-    \item Statements and early returns
+\item Dialect semantics
 
-    \item Block semantics and typing
+\item Statements and early returns
 
-    \item Dynamic typing and runtime semantics
+\item Block semantics and typing
+
+\item Dynamic typing and runtime semantics
 
 \end{itemize}
 
@@ -152,13 +161,13 @@ issues:
 
 \begin{itemize}
 
-    \item Concrete syntax and sugar, such as mixfix declarations and classes
+\item Concrete syntax and sugar, such as mixfix declarations and classes
 
-    \item Variables and the heap
+\item Variables and the heap
 
-    \item Generic and inferred types
+\item Generic and inferred types
 
-    \item Annotations and reflection
+\item Annotations and reflection
 
 \end{itemize}
 
@@ -170,7 +179,8 @@ substitution algorithm which can substitute both variables and \self, but with
 only variables crossing object boundaries.  As the language does not feature
 casting, type soundness guarantees program completion, whereas FJ may halt on
 invalid casts.  Without match-case casting Tiny Grace is strictly less powerful
-than FJ, as lost type information cannot be recovered.
+than FJ, as lost type information cannot be recovered, and recursive types
+cannot be expressed.
 
 
 \section{Syntax}
@@ -273,33 +283,33 @@ object %%{
 
 \begin{equation}
 \tag{\textsc{T-Var}}\label{eq:type-var}
-\AxiomC{$\Gamma \vdash \xs : \Gamma(\xs)$}
+\AxiomC{$\gctx{\xs}{\G(\xs)}$}
 \DisplayProof
 \end{equation}
 
 \begin{equation}
 \tag{\textsc{T-Req}}\label{eq:type-req}
-\AxiomC{$\Gamma \vdash e : \tau$}
-\AxiomC{$m(\*x_i : \upsilon_i*) \to \sigma \in \tau$}
-\AxiomC{$\Gamma \vdash \*e_i : \upsilon^\prime_i*$}
+\AxiomC{$\gctx{e}{\type{\*\H_i*}}$}
+\AxiomC{$m(\*x_i : \upsilon_i*) \to \sigma \in \*\H_i*$}
+\AxiomC{$\gctx{\*e_i}{\upsilon^\prime_i}*$}
 \AxiomC{$\*\upsilon^\prime_i \sub \upsilon_i*$}
-\QuaternaryInfC{$\Gamma \vdash e.m(\*e_i*) : \sigma$}
+\QuaternaryInfC{$\gctx{e.m(\*e_i*)}{\sigma}$}
 \DisplayProof
 \end{equation}
 
 \begin{equation}
 \tag{\textsc{T-Obj}}\label{eq:type-obj}
-\AxiomC{$\Gamma, \self : \type{\*\H_i*} \vdash \*\methh{\H_i}{e_i}~\mathrm{OK}*$}
-\UnaryInfC{$\Gamma \vdash \object{\*\methh{\H_i}{e_i}*} : \type{\*\H_i*}$}
+\AxiomC{$\G, \self : \type{\*\H_i*} \vdash \*\methh{\H_i}{e_i}~\mathrm{OK}*$}
+\UnaryInfC{$\gctx{\object{\*\methh{\H_i}{e_i}*}}{\type{\*\H_i*}}$}
 \DisplayProof
 \end{equation}
 
 \begin{equation}
 \tag{\textsc{T-Meth}}\label{eq:type-meth}
-\AxiomC{$\*x_i \notin \Gamma*$}
-\AxiomC{$\Gamma, \*x_i : \upsilon_i* \vdash e : \sigma^\prime$}
+\AxiomC{$\*x_i \notin \G*$}
+\AxiomC{$\ctx{\G, \*x_i : \upsilon_i*}{e}{\sigma^\prime}$}
 \AxiomC{$\sigma^\prime \sub \sigma$}
-\TrinaryInfC{$\Gamma \vdash \method{m}{\*x_i : \upsilon_i*}{\sigma}{e}~\mathrm{OK}$}
+\TrinaryInfC{$\G \vdash \method{m}{\*x_i : \upsilon_i*}{\sigma}{e}~\mathrm{OK}$}
 \DisplayProof
 \end{equation}
 
@@ -400,11 +410,11 @@ terminate substitution. \qed
 $\xs$ is never well-typed in an empty context.  An inductive step for method
 requests is trivial, so we need only show that a method request whose receiver
 and arguments are all object literals can always proceed and will always
-complete.  Well-typedness guarantees that the requested method always exists in
-the receiver, which is the only requirement for $\rto$ to be applied to this
-form of method request.  Due to Lemma~\ref{lem:sub-complete}, this single step
-of $\rto$ is guaranteed to complete and produce a new expression $e^\prime$.
-\qed
+complete.  Rule~\ref{eq:type-obj} guarantees that the requested method always
+exists in the receiver, which is the only requirement for $\rto$ to be applied
+to this form of method request.  Due to Lemma~\ref{lem:sub-complete}, this
+single step of $\rto$ is guaranteed to complete and produce a new expression
+$e^\prime$. \qed
 
 \end{tproof}
 
@@ -413,13 +423,14 @@ of $\rto$ is guaranteed to complete and produce a new expression $e^\prime$.
 \begin{theorem}[Preservation]
 \label{th:preservation}
 
-If $\Gamma \vdash e : \tau$ and $e \rto e^\prime$, then $\Gamma \vdash e^\prime
-: \tau^\prime$ for some $\tau^\prime \sub \tau$.
+If $\gctx{e}{\tau}$ and $e \rto e^\prime$, then $\gctx{e^\prime}{\tau^\prime}$
+for some $\tau^\prime \sub \tau$.
 
 \begin{lemma}
 \label{lem:submethod}
 
-If $\H \in \tau$, then $\H \in \sigma$ for all $\sigma \sub \tau$.
+If $\H \in \*\H_i*$, then $\H \in \*\H^\prime_i*$ for all
+$\type{\*\H^\prime_i*} \sub \type{\*\H_i*}$.
 
 \begin{lproof}
 Follows from Rule~\ref{eq:type-sub}. \qed
@@ -430,22 +441,38 @@ Follows from Rule~\ref{eq:type-sub}. \qed
 \begin{lemma}[Substitution Preservation]
 \label{lem:preservation}
 
-If $\Gamma, \*x_i : \upsilon_i* \vdash e : \tau$, and
-    $\Gamma \vdash \*y_i : \upsilon^\prime_i*$ where $\upsilon^\prime_i \sub
-    \upsilon_i$, then $\Gamma \vdash [\*y_i/x_i*]e : \tau^\prime$ for some
-    $\tau^\prime \sub \tau$.
+If $\ctx{\G, \xs : \upsilon}{e}{\tau}$, and $\gctx{e^\prime}{\upsilon^\prime}$
+where $\upsilon^\prime \sub \upsilon$, then
+$\gctx{[e^\prime/\xs]e}{\tau^\prime}$ for some $\tau^\prime \sub \tau$.
 
 \begin{lproof}
 
-By induction on the derivation of $\Gamma, \*x_i : \upsilon_i* \vdash e : \tau$.
-\qed
+By induction on the derivation of $\ctx{\G, \xs : \upsilon}{e}{\tau}$.
 
-\begin{lcase}[T-Var]
-$e = \xs$
+\begin{lcase}[S-Var: $e = \xs$]
+$\ctx{\G, e : \upsilon}{e}{\upsilon}$, so $\tau = \upsilon$.
+$[e^\prime/\xs]e \sto e^\prime$ and $\gctx{e^\prime}{\upsilon^\prime}$, so
+$\tau^\prime = \upsilon^\prime$.  As
+$\upsilon^\prime \sub \upsilon$, $ \tau^\prime \sub \tau$.
 \end{lcase}
 
-\begin{lcase}[T-Req]
-$e = e^\prime.m(\*e_i*)$
+\begin{lcase}[S-None: $e = y~\mathbf{where}~y \neq \xs$]
+$[e^\prime/\xs]e \sto e$ and $\gctx{e}{\tau}$, so
+$\tau^\prime = \tau$.  As $\sub$ is reflexive, $\tau^\prime \sub \tau$.
+\end{lcase}
+
+\begin{lcase}[S-Req: $e = e_0.m(\*e_i*)$]
+$e_0 \sto e^\prime_0$ and $\*e_i \sto e^\prime_i*$ where
+$\Gamma, \xs : \upsilon \vdash e^\prime_0 : \sigma, \*e^\prime_i : \upsilon^\prime*$.
+\end{lcase}
+
+\begin{lcase}[S-Obj/S-Meth: $e = \object{\*\M_i*}, \xs = x$]
+Trivial inductive step.
+\end{lcase}
+
+\begin{lcase}[S-Self: $e = \object{\*\M_i*}, \xs = \self$]
+$[e^\prime/\self]e \sto e$ and $\gctx{e}{\tau}$, so
+$\tau^\prime = \tau$.  As $\sub$ is reflexive, $\tau^\prime \sub \tau$. \qed
 \end{lcase}
 
 \end{lproof}
@@ -456,27 +483,27 @@ $e = e^\prime.m(\*e_i*)$
 
 By induction on a derivation of $e \rto e^\prime$.  The inductive step for
 \textsc{R-Rec} and \textsc{R-Arg} is trivial, so only \textsc{R-Req} remains.
-\begin{displaymath}
-e = \O.m(\*\O_i*) \quad\quad
-\method{m}{\*x_i : \upsilon_i*}{\sigma}{e_m} \in \O \quad\quad
-e^\prime = [\*\O_i/x_i*, \O/\self]e_m
-\end{displaymath}
+\begin{align*}
+&e = \object{\*\M_i*}.m(\*\O_i*) &
+\method{m}{\*x_i : \upsilon_i*}{\sigma}{e_m} \in \*\M_i* \\
+&e^\prime = [\*\O_i/x_i*, \object{\*\M_i*}/\self]e_m &
+\end{align*}
 
 \noindent By Rules~\ref{eq:type-req} and~\ref{eq:type-obj}, for some types
 $\*\upsilon^\prime_i*$ we have:
 \begin{displaymath}
-\Gamma \vdash \object{\*\methh{\H_j}{e_j}*} : \type{\*\H_j*} \quad\quad
+\G \vdash \object{\*\methh{\H_j}{e_j}*} : \type{\*\H_j*} \quad\quad
 m(\*x_i : \upsilon_i*) \to \sigma \in \*\H_j* \quad\quad
-\Gamma \vdash \*\O_i : \upsilon^\prime_i* \quad\quad
+\G \vdash \*\O_i : \upsilon^\prime_i* \quad\quad
 \*\upsilon^\prime_i \sub \upsilon_i*
 \end{displaymath}
 
-\noindent By Lemma~$\varnothing$,
+\noindent By Lemma~?
 $\*x_i : \upsilon_i*, \self : \type{\H_i} \vdash e_m : \tau$ for some type
-$\tau$ where $\tau \sub \sigma$.  By Lemma~$\varnothing$,
-$\Gamma, \*x_i : \upsilon_i*, \self : \type{\H_i} \vdash e_m : \tau$.  Then, by
+$\tau$ where $\tau \sub \sigma$.  By Lemma~?,
+$\G, \*x_i : \upsilon_i*, \self : \type{\H_i} \vdash e_m : \tau$.  Then, by
 Lemma~\ref{lem:preservation},
-$\Gamma \vdash [\*\O_i/x_i,\O/\self*]e_m : \tau^\prime$ for some type
+$\G \vdash [\*\O_i/x_i,\O/\self*]e_m : \tau^\prime$ for some type
 $\tau^\prime \sub \tau$.  $\tau^\prime$ is a subtype of $\sigma$ by transitivity
 of $\sub$. \qed
 
@@ -488,8 +515,8 @@ of $\sub$. \qed
 \label{th:type-soundness}
 
 If $\varnothing \vdash e : \tau$ and $e \rtot e^\prime$ with $e^\prime$ in
-normal form, then $e^\prime$ is an object literal $\O$ with $\varnothing \vdash
-\O : \sigma$ where $\sigma \sub \tau$.
+normal form, then $e^\prime$ is an object literal $\O$ with
+$\varnothing \vdash \O : \tau^\prime$ where $\tau^\prime \sub \tau$.
 
 \begin{tproof}
 Immediate from Theorems~\ref{th:progress} and~\ref{th:preservation}. \qed
