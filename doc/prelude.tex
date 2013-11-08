@@ -1,0 +1,103 @@
+% Document information
+
+\def\version{0.1.0}
+
+\def\thetitle{Tiny Grace Formal Specification}
+\def\theauthor{Timothy Jones}
+
+\usepackage[
+pdftitle={\thetitle},
+pdfauthor={\theauthor},
+colorlinks,
+urlcolor=black,
+linkcolor=black,
+citecolor=black
+]{hyperref}
+
+
+% Math definitions
+
+\def\H{\mathcal{H}}
+\def\M{\mathcal{M}}
+\def\O{\mathcal{O}}
+
+\def\G{\Gamma}
+\newcommand{\ctx}[3]{#1 \vdash #2 : #3}
+\newcommand{\gctx}[2]{\ctx{\G}{#1}{#2}}
+\newcommand{\ectx}[2]{\ctx{\varnothing}{#1}{#2}}
+
+\def\*#1*{\overline{#1}}
+
+\def\sub{<\kern-1pt:}
+
+\def\bo{{\sffamily\upshape\{}}
+\def\bc{{\sffamily\upshape\}}}
+\def\po{{\sffamily\upshape(}}
+\def\pc{{\sffamily\upshape)}}
+
+\newcommand{\key}[1]{{\sffamily\bfseries#1}}
+\newcommand{\object}[1]{\text{\key{object}\bo}#1\text{\bc}}
+\newcommand{\methh}[2]{\text{\key{method} }#1\ \text{\bo}#2\text{\bc}}
+\newcommand{\method}[4]{\methh{#1\text{\po}#2\text{\pc }\to #3}{#4}}
+\newcommand{\type}[1]{\text{\bo}#1\text{\bc}}
+\newcommand{\self}{\text{\key{self}}}
+
+\def\rto{\overset{_\mathcal{R}}\longrightarrow}
+\def\rtot{\overset{_{\mathcal{R}^*}}{\longrightarrow}}
+\def\sto{\overset{_\mathcal{S}}\longrightarrow}
+\def\stot{\overset{_{\mathcal{S}^+}}\longrightarrow}
+
+\def\xs{\overset{_\text{\sffamily\bfseries s}}x}
+
+
+% Listings settings
+
+\lstdefinelanguage{TinyGrace}{%
+keywords={object, method, self},
+sensitive=true,
+literate=
+    {'}{$^\prime$}1
+    {->\ }{$\to$ }1
+}
+
+\lstset{%
+basicstyle=\sffamily,
+keywordstyle=\bfseries,
+xleftmargin=1.5em,
+columns=fullflexible,
+language=TinyGrace
+}
+
+
+% Theorem definitions
+
+\newtheoremstyle{theorem}{}{}{\itshape}{}{}{.}{.5em}
+    {\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
+\theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}
+
+\newtheoremstyle{lemma}{}{}{\itshape\addtolength{\leftskip}{1em}}{}{}{.}{.5em}
+    {\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
+\theoremstyle{lemma}
+\newtheorem{lemma}{Lemma}[theorem]
+
+\newtheoremstyle{tproof}{}{}{}{}{}{.}{.5em}
+    {\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
+\theoremstyle{tproof}
+\newtheorem*{tproof}{Proof}
+
+\newtheoremstyle{lproof}{}{}{\addtolength{\leftskip}{1em}}{}{}{.}{.5em}
+    {\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
+\theoremstyle{lproof}
+\newtheorem*{lproof}{Proof}
+
+\newtheoremstyle{tcase}{}{}{\addtolength{\leftskip}{1em}}{}{}{.}{.5em}
+    {\thmname{\textit{#1}}\thmnote{\ \textsc{#3}}}
+\theoremstyle{tcase}
+\newtheorem*{tcase}{Case}
+
+\newtheoremstyle{lcase}{}{}{\addtolength{\leftskip}{3em}}{-1em}{}{}{.5em}
+    {\thmname{\textit{#1}}\thmnote{\ \textsc{#3}}\hspace*{\fill}\\}
+\theoremstyle{lcase}
+\newtheorem*{lcase}{Case}
+

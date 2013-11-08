@@ -1,0 +1,57 @@
+\section{Typing}
+
+\begin{figure}
+\centering
+
+\begin{equation}
+\tag{\textsc{T-Sub}}\label{eq:type-sub}
+\AxiomC{$\*\H* \subseteq \*\H^\prime*$}
+\UnaryInfC{\bo~$\*\H^\prime*$ \bc~$\sub$ \bo~$\*\H*$ \bc}
+\DisplayProof
+\end{equation}
+
+\caption{Tiny Grace subtyping}
+\label{fig:subtyping}
+
+\end{figure}
+
+\begin{figure}
+\centering
+
+\begin{equation}
+\tag{\textsc{T-Var}}\label{eq:type-var}
+\AxiomC{$\gctx{\xs}{\G(\xs)}$}
+\DisplayProof
+\end{equation}
+
+\begin{equation}
+\tag{\textsc{T-Req}}\label{eq:type-req}
+\AxiomC{$\gctx{e}{\type{\*\H_i*}}$}
+\AxiomC{$m(\*x_i : \upsilon_i*) \to \sigma \in \*\H_i*$}
+\AxiomC{$\gctx{\*e_i}{\upsilon^\prime_i}*$}
+\AxiomC{$\*\upsilon^\prime_i \sub \upsilon_i*$}
+\QuaternaryInfC{$\gctx{e.m(\*e_i*)}{\sigma}$}
+\DisplayProof
+\end{equation}
+
+\begin{equation}
+\tag{\textsc{T-Obj}}\label{eq:type-obj}
+\AxiomC{$\G, \self : \type{\*\H_i*} \vdash \*\methh{\H_i}{e_i}~\mathrm{OK}*$}
+\UnaryInfC{$\gctx{\object{\*\methh{\H_i}{e_i}*}}{\type{\*\H_i*}}$}
+\DisplayProof
+\end{equation}
+
+\begin{equation}
+\tag{\textsc{T-Meth}}\label{eq:type-meth}
+\AxiomC{$\*x_i \notin \G*$}
+\AxiomC{$\ctx{\G, \*x_i : \upsilon_i*}{e}{\sigma^\prime}$}
+\AxiomC{$\sigma^\prime \sub \sigma$}
+\TrinaryInfC{$\G \vdash \method{m}{\*x_i : \upsilon_i*}{\sigma}{e}~\mathrm{OK}$}
+\DisplayProof
+\end{equation}
+
+\caption{Tiny Grace typing rules}
+\label{fig:typing}
+
+\end{figure}
+

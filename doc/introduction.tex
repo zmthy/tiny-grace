@@ -1,0 +1,59 @@
+\section{Introduction}
+
+Tiny Grace is a tiny subset of the Grace programming language, in the spirit of
+Featherweight Java \cite{fj}.  It currently aims to resolve the following
+issues:
+
+\begin{itemize}
+
+\item Simple reduction semantics
+
+\item Static typing
+
+\end{itemize}
+
+\noindent Future versions will aim to extend the formalism to address:
+
+\begin{itemize}
+
+\item Safe casting with match-case
+
+\item Type aliases for recursive types
+
+\item Inheritance semantics and typing
+
+\item Dialect semantics
+
+\item Statements and early returns
+
+\item Block semantics and typing
+
+\item Dynamic typing and runtime semantics
+
+\end{itemize}
+
+\noindent Tiny Grace intentionally avoids the following issues:
+
+\begin{itemize}
+
+\item Concrete syntax and sugar, such as mixfix declarations and classes
+
+\item Variables and the heap
+
+\item Generic and inferred types
+
+\item Annotations and reflection
+
+\end{itemize}
+
+\noindent The current version of Tiny Grace is much simpler than Featherweight
+Java in most aspects, as it does not feature constructors, fields, or casts, and
+does not need to maintain a class table.  Instead of these features, it must
+implement scope, as objects can be nested.  This requires a more complicated
+substitution algorithm which can substitute both variables and \self, but with
+only variables crossing object boundaries.  As the language does not feature
+casting, type soundness guarantees program completion, whereas FJ may halt on
+invalid casts.  Without match-case casting Tiny Grace is strictly less powerful
+than FJ, as lost type information cannot be recovered, and recursive types
+cannot be expressed.
+

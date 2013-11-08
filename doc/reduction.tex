@@ -1,0 +1,64 @@
+\section{Reduction}
+
+\subsection{Substitution}
+
+\begin{figure}
+\centering
+
+\begin{align}
+\tag{\textsc{S-Var}}\label{eq:sub-var}
+[\O/\xs]\xs              &\sto \O \\
+\tag{\textsc{S-None}}\label{eq:sub-none}
+[\O/\xs]y                &\sto y \quad \mathbf{if}\ \xs \neq y \\
+\tag{\textsc{S-Req}}\label{eq:sub-req}
+[\O/\xs]e.m(\*e_i*)      &\sto ([\O/\xs]e).m(\*[\O/\xs]e_i*) \\
+\tag{\textsc{S-Obj}}\label{eq:sub-obj}
+[\O/x]\object{\*\M*}     &\sto \object{\*[\O/x]\M*} \\
+\tag{\textsc{S-Self}}\label{eq:sub-self}
+[\O/\self]\object{\*\M*} &\sto \object{\*\M*} \\
+\tag{\textsc{S-Meth}}\label{eq:sub-meth}
+[\O/x]\method{m}{\*y_i : \upsilon_i*}{\sigma}{e} &\sto \method{m}{\*y_i : \upsilon_i*}{\sigma}{[\O/x]e}
+\end{align}
+
+\caption{Tiny Grace substitution rules}
+\label{fig:substitution}
+
+\end{figure}
+
+\subsection{Reduction Rules}
+
+Given a Tiny Grace program $(\*\M*, e)$, we can reduce $e$ in the scope of
+$\*\M*$ by applying the substitution rules given in
+Figure~\ref{fig:substitution} to the expression $[\object{\*\M*}/\self]e$, and
+then applying the reduction rules given in Figure~\ref{fig:reduction} to the
+result.
+
+\begin{figure}
+\centering
+
+\begin{equation}
+\tag{\textsc{R-Rec}}\label{eq:red-rec}
+\AxiomC{$e \rto e^\prime$}
+\UnaryInfC{$e.m(\*e_i*) \rto e^\prime.m(\*e_i*)$}
+\DisplayProof
+\end{equation}
+
+\begin{equation}
+\tag{\textsc{R-Arg}}\label{eq:red-arg}
+\AxiomC{$e_i \rto e_i^\prime$}
+\UnaryInfC{$\O.m(\dots, e_i, \dots) \rto \O.m(\dots, e_i^\prime, \dots)$}
+\DisplayProof
+\end{equation}
+
+\begin{equation}
+\tag{\textsc{R-Req}}\label{eq:red-req}
+\AxiomC{$\method{m}{\*x_i : \upsilon_i*}{\sigma}{e} \in \*\M*$}
+\UnaryInfC{$\object{\*\M*}.m(\*\O_i*) \rto [\*\O_i/x_i*,\ \object{\*\M*}/\self]e$}
+\DisplayProof
+\end{equation}
+
+\caption{Tiny Grace reduction rules}
+\label{fig:reduction}
+
+\end{figure}
+
