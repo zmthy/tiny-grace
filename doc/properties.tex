@@ -1,140 +1,126 @@
 \section{Properties}
 
 \begin{theorem}[Progress]
-\label{th:progress}
+  \label{th:progress}
 
-Every well-typed expression is either an object literal or can be reduced by an
-application of $\rto$.
+  Every well-typed expression is either an object literal or can be reduced by
+  an application of $\sto$.
 
-\begin{lemma}[Substitution Completeness]
-\label{lem:sub-complete}
+  \begin{lemma}[Substitution Completeness]
+    \label{lem:sub-complete}
 
-Substitution on a well-typed term always completes.
+    Substitution on a well-typed term always completes.
 
-\begin{lproof}
-A well-typed program must have a finite size, which means every branch must
-bottom out on either a variable, \self, or an empty object literal, all of which
-terminate substitution. \qed
-\end{lproof}
+    \begin{proof}
+      A well-typed program must have a finite size, which means every branch
+      must bottom out on either a variable, \self, or an empty object literal,
+      all of which terminate substitution.
+    \end{proof}
+  \end{lemma}
 
-\end{lemma}
-
-\begin{tproof}
-
-$\xs$ is never well-typed in an empty context.  An inductive step for method
-requests is trivial, so we need only show that a method request whose receiver
-and arguments are all object literals can always proceed and will always
-complete.  Rule~\ref{eq:type-obj} guarantees that the requested method always
-exists in the receiver, which is the only requirement for $\rto$ to be applied
-to this form of method request.  Due to Lemma~\ref{lem:sub-complete}, this
-single step of $\rto$ is guaranteed to complete and produce a new expression
-$e^\prime$. \qed
-
-\end{tproof}
-
+  \begin{proof}
+    $\xs$ is never well-typed in an empty context.  An inductive step for method
+    requests is trivial, so we need only show that a method request whose
+    receiver and arguments are all object literals can always proceed and will
+    always complete.  Rule~\ref{eq:type-obj} guarantees that the requested
+    method always exists in the receiver, which is the only requirement for
+    $\sto$ to be applied to this form of method request.  Due to
+    Lemma~\ref{lem:sub-complete}, this single step of $\sto$ is guaranteed to
+    complete and produce a new expression $e^\prime$.
+  \end{proof}
 \end{theorem}
 
 \begin{theorem}[Preservation]
-\label{th:preservation}
+  \label{th:preservation}
 
-If $\gctx{e}{\tau}$ and $e \rto e^\prime$, then $\gctx{e^\prime}{\tau^\prime}$
-for some $\tau^\prime \sub \tau$.
+  If $\gctx{e}{\tau}$ and $e \sto e^\prime$, then $\gctx{e^\prime}{\tau^\prime}$
+  for some $\tau^\prime \sub \tau$.
 
-\begin{lemma}
-\label{lem:submethod}
+  \begin{lemma}
+    \label{lem:submethod}
 
-If $\H \in \*\H_i*$, then $\H \in \*\H^\prime_i*$ for all
-$\type{\*\H^\prime_i*} \sub \type{\*\H_i*}$.
+    If $\H \in \*\H_i*$, then $\H \in \*\H^\prime_i*$ for all
+    $\type{\*\H^\prime_i*} \sub \type{\*\H_i*}$.
 
-\begin{lproof}
-Follows from Rule~\ref{eq:type-sub}. \qed
-\end{lproof}
+    \begin{proof}
+      Follows from Rule~\ref{eq:type-sub}.
+    \end{proof}
+  \end{lemma}
 
-\end{lemma}
+  \begin{lemma}[Substitution Preservation]
+    \label{lem:preservation}
 
-\begin{lemma}[Substitution Preservation]
-\label{lem:preservation}
+    If $\ctx{\G, \xs : \upsilon}{e}{\tau}$, and
+    $\gctx{e^\prime}{\upsilon^\prime}$ where $\upsilon^\prime \sub \upsilon$,
+    then $\gctx{[e^\prime/\xs]e}{\tau^\prime}$ for some $\tau^\prime \sub \tau$.
 
-If $\ctx{\G, \xs : \upsilon}{e}{\tau}$, and $\gctx{e^\prime}{\upsilon^\prime}$
-where $\upsilon^\prime \sub \upsilon$, then
-$\gctx{[e^\prime/\xs]e}{\tau^\prime}$ for some $\tau^\prime \sub \tau$.
+    \begin{proof}
+      By induction on the derivation of $\ctx{\G, \xs : \upsilon}{e}{\tau}$.
 
-\begin{lproof}
+      \case{\ref{eq:sub-var}}{e = \xs}
+      $\ctx{\G, e : \upsilon}{e}{\upsilon}$, so $\tau = \upsilon$.
+      $[e^\prime/\xs]e \bto e^\prime$ and $\gctx{e^\prime}{\upsilon^\prime}$,
+      so $\tau^\prime = \upsilon^\prime$.  As $\upsilon^\prime \sub \upsilon$,
+      $\tau^\prime \sub \tau$.
 
-By induction on the derivation of $\ctx{\G, \xs : \upsilon}{e}{\tau}$.
+      \case{\ref{eq:sub-none}}{e = y~\mathbf{where}~y \neq \xs}
+      $[e^\prime/\xs]e \bto e$ and $\gctx{e}{\tau}$, so $\tau^\prime = \tau$.
+      As $\sub$ is reflexive, $\tau^\prime \sub \tau$.
 
-\begin{lcase}[S-Var: $e = \xs$]
-$\ctx{\G, e : \upsilon}{e}{\upsilon}$, so $\tau = \upsilon$.
-$[e^\prime/\xs]e \sto e^\prime$ and $\gctx{e^\prime}{\upsilon^\prime}$, so
-$\tau^\prime = \upsilon^\prime$.  As
-$\upsilon^\prime \sub \upsilon$, $ \tau^\prime \sub \tau$.
-\end{lcase}
+      \case{\ref{eq:sub-req}}{e = e_0.m(\*e_i*)}
+      $e_0 \bto e^\prime_0$ and $\*e_i \bto e^\prime_i*$ where $\Gamma, \xs :
+      \upsilon \vdash e^\prime_0 : \sigma, \*e^\prime_i : \upsilon^\prime*$.
 
-\begin{lcase}[S-None: $e = y~\mathbf{where}~y \neq \xs$]
-$[e^\prime/\xs]e \sto e$ and $\gctx{e}{\tau}$, so
-$\tau^\prime = \tau$.  As $\sub$ is reflexive, $\tau^\prime \sub \tau$.
-\end{lcase}
+      \case{\ref{eq:sub-obj}}{e = \object{\*\M_i*}, \xs = x}
+      Step into method bodies.  Trivial inductive step, as parameters may not
+      shadow variables.
 
-\begin{lcase}[S-Req: $e = e_0.m(\*e_i*)$]
-$e_0 \sto e^\prime_0$ and $\*e_i \sto e^\prime_i*$ where
-$\Gamma, \xs : \upsilon \vdash e^\prime_0 : \sigma, \*e^\prime_i : \upsilon^\prime*$.
-\end{lcase}
+      \case{\ref{eq:sub-self}}{e = \object{\*\M_i*}, \xs = \self}
+      $[e^\prime/\self]e \bto e$ and $\gctx{e}{\tau}$, so $\tau^\prime =
+      \tau$. As $\sub$ is reflexive, $\tau^\prime \sub \tau$.
+    \end{proof}
+  \end{lemma}
 
-\begin{lcase}[S-Obj/S-Meth: $e = \object{\*\M_i*}, \xs = x$]
-Trivial inductive step.
-\end{lcase}
+  \begin{proof}
+    By induction on a derivation of $e \sto e^\prime$.  The inductive step for
+    \textsc{R-Rec} and \textsc{R-Arg} is trivial, so only \textsc{R-Req}
+    remains.
+%
+    \begin{align*}
+      &e = \object{\*\M_i*}.m(\*\O_i*) &
+      \method{m}{\*x_i : \upsilon_i*}{\sigma}{e_m} \in \*\M_i* \\
+      &e^\prime = [\*\O_i/x_i*, \object{\*\M_i*}/\self]e_m &
+    \end{align*}
 
-\begin{lcase}[S-Self: $e = \object{\*\M_i*}, \xs = \self$]
-$[e^\prime/\self]e \sto e$ and $\gctx{e}{\tau}$, so
-$\tau^\prime = \tau$.  As $\sub$ is reflexive, $\tau^\prime \sub \tau$. \qed
-\end{lcase}
+    \noindent By Rules~\ref{eq:type-req} and~\ref{eq:type-obj}, for some types
+    $\*\upsilon^\prime_i*$ we have:
+%
+    \begin{displaymath}
+      \G \vdash \object{\*\methh{\H_j}{e_j}*} : \type{\*\H_j*} \quad\quad
+      m(\*x_i : \upsilon_i*) \to \sigma \in \*\H_j* \quad\quad
+      \G \vdash \*\O_i : \upsilon^\prime_i* \quad\quad
+      \*\upsilon^\prime_i \sub \upsilon_i*
+    \end{displaymath}
 
-\end{lproof}
-
-\end{lemma}
-
-\begin{tproof}
-
-By induction on a derivation of $e \rto e^\prime$.  The inductive step for
-\textsc{R-Rec} and \textsc{R-Arg} is trivial, so only \textsc{R-Req} remains.
-\begin{align*}
-&e = \object{\*\M_i*}.m(\*\O_i*) &
-\method{m}{\*x_i : \upsilon_i*}{\sigma}{e_m} \in \*\M_i* \\
-&e^\prime = [\*\O_i/x_i*, \object{\*\M_i*}/\self]e_m &
-\end{align*}
-
-\noindent By Rules~\ref{eq:type-req} and~\ref{eq:type-obj}, for some types
-$\*\upsilon^\prime_i*$ we have:
-\begin{displaymath}
-\G \vdash \object{\*\methh{\H_j}{e_j}*} : \type{\*\H_j*} \quad\quad
-m(\*x_i : \upsilon_i*) \to \sigma \in \*\H_j* \quad\quad
-\G \vdash \*\O_i : \upsilon^\prime_i* \quad\quad
-\*\upsilon^\prime_i \sub \upsilon_i*
-\end{displaymath}
-
-\noindent By Lemma~?
-$\*x_i : \upsilon_i*, \self : \type{\H_i} \vdash e_m : \tau$ for some type
-$\tau$ where $\tau \sub \sigma$.  By Lemma~?,
-$\G, \*x_i : \upsilon_i*, \self : \type{\H_i} \vdash e_m : \tau$.  Then, by
-Lemma~\ref{lem:preservation},
-$\G \vdash [\*\O_i/x_i,\O/\self*]e_m : \tau^\prime$ for some type
-$\tau^\prime \sub \tau$.  $\tau^\prime$ is a subtype of $\sigma$ by transitivity
-of $\sub$. \qed
-
-\end{tproof}
+    \noindent By Lemma~? $\*x_i : \upsilon_i*, \self : \type{\H_i} \vdash e_m :
+    \tau$ for some type $\tau$ where $\tau \sub \sigma$.  By Lemma~?, $\G, \*x_i
+    : \upsilon_i*, \self : \type{\H_i} \vdash e_m : \tau$.  Then, by
+    Lemma~\ref{lem:preservation}, $\G \vdash [\*\O_i/x_i,\O/\self*]e_m :
+    \tau^\prime$ for some type $\tau^\prime \sub \tau$.  $\tau^\prime$ is a
+    subtype of $\sigma$ by transitivity of $\sub$.
+  \end{proof}
 
 \end{theorem}
 
 \begin{theorem}[Type Soundness]
-\label{th:type-soundness}
+  \label{th:type-soundness}
 
-If $\varnothing \vdash e : \tau$ and $e \rtot e^\prime$ with $e^\prime$ in
-normal form, then $e^\prime$ is an object literal $\O$ with
-$\varnothing \vdash \O : \tau^\prime$ where $\tau^\prime \sub \tau$.
+  If $\varnothing \vdash e : \tau$ and $e \stot e^\prime$ with $e^\prime$ in
+  normal form, then $e^\prime$ is an object literal $\O$ with $\varnothing
+  \vdash \O : \tau^\prime$ where $\tau^\prime \sub \tau$.
 
-\begin{tproof}
-Immediate from Theorems~\ref{th:progress} and~\ref{th:preservation}. \qed
-\end{tproof}
-
+  \begin{proof}
+    Immediate from Theorems~\ref{th:progress} and~\ref{th:preservation}.
+  \end{proof}
 \end{theorem}
 

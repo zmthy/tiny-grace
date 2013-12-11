@@ -1,57 +1,47 @@
 \section{Language}
+\label{sec:language}
 
 A Tiny Grace program consists of a pair containing an object body and an
 expression which will be evaluated in the scope of the body. Unlike standard
 Grace, parentheses and type information is always required.  As there is no type
 aliasing, type information is always a type literal, so the current language is
-fairly verbose.  Tiny Grace programs are usually valid Grace programs, with
-the exception that variables may shadow method names.
+fairly verbose.  Tiny Grace programs are usually valid Grace programs, with the
+exception that variables may shadow method names.
 
-As an example, we will model a constructor for pair objects.  The constructor
-will take any two objects as parameters, and produce a new object with methods
-\lstinline{fst()} and \lstinline{snd()} that return the respective arguments.
+As an example, we will model a constructor that takes an object, and `wraps' it
+in another object, behind the \lstinline{value} method.
 
 \begin{lstlisting}
-method pair(fst' : {}, snd' : {}) -> { fst() -> {}, snd() -> {} } {
-    object {
-        method fst() -> {} { fst' }
-        method snd() -> {} { snd' }
-    }
+method wrap(x : {}) -> { value() -> {} } {
+  object {
+    method value() -> {} { x }
+  }
 }
 \end{lstlisting}
 
-\noindent In order to take any object as parameters, the types of
-\lstinline{fst'} and \lstinline{snd'} are empty, indicating no requirement on
-the methods in the objects.  The use of prime on the parameter names is
-unnecessary, but included for clarity.
+\noindent Due to subtyping, any object may be passed to this method as
+\lstinline{x}, as all objects satisfy the empty type.  Any static knowledge of
+the methods in \lstinline{x} is lost, and cannot be recovered, so no methods can
+ever be requested on the result of the \lstinline{value} method.
 
-This constructor is a valid object body by itself, and we can now evaluate an
-expression in the scope of this body.  Method requests cannot be unqualified,
-and so the constructor must be invoked as \lstinline{self.pair}.
-
-\begin{lstlisting}
-self.pair(object {}, object {
-    method run(obj : { apply() -> {} }) -> {} { obj.apply() }
-}).snd()
-\end{lstlisting}
-
-\noindent The outcome will be the following object:
+The \lstinline{wrap} method is a valid object body by itself, and we can now
+evaluate an expression in the scope of this body.  Method requests cannot be
+unqualified, and so the method must be requested as \lstinline{self.wrap}.
 
 \begin{lstlisting}
-object {
-    method run(obj : { apply() -> {} }) -> {} { obj.apply() }
-}
+self.wrap(object {
+  method id(y : {}) -> {} { y }
+})
 \end{lstlisting}
 
-\noindent The static type of this resulting expression is empty, as that is
-the return type of the \lstinline{snd()} method.  Tiny Grace currently does
-not include a mechanism for recovering the runtime type of the object, and as
-such we could never request the \lstinline{run()} method on this object.
-
+\noindent The outcome of requesting \lstinline{value} on this expression will be
+the object passed to \lstinline{wrap}.  As mentioned above, the type checker
+will not allow a request for the method \lstinline{id} on the result.
 
 \subsection{Syntax}
+\label{sec:syntax}
 
-The abstract syntax for Tiny Grace can be found in
+The abstract syntax for Tiny Grace is defined in
 Figure~\ref{fig:abstract-syntax}.  The metavariable $\M$ ranges over methods;
 $\O$ over object literals; $x$ and $y$ over variable names; $\xs$ over both
 variable names and the {\sffamily\bfseries self} keyword; $\tau$, $\sigma$ and
@@ -59,34 +49,39 @@ $\upsilon$ over types; $\H$ over method headers, $m$ over method names, and $e$
 over expressions.  We write $\*e*$ to indicate a possibly empty sequence of
 comma-separated expressions $e_1, \dots, e_n$, as well as for method header
 parameters $\*x : \tau*$.  We also write $\*\H*$ and $\*\M*$ to indicate a
-possibly empty set of method headers $\H_1 \dots \H_n$ and $\M_1 \dots \M_n$
-respectively.
+possibly empty set of method headers with unique names $\H_1 \dots \H_n$ and
+$\M_1 \dots \M_n$ respectively.
 
-\begin{figure}
-\centering
+As an object body is just a sequence of methods, a Tiny Grace program is
+any pair of the form $(\*\M*, e)$.
 
-\grammarindent3.4em
-\renewcommand{\grammarlabel}[2]{$#1$\hfill#2}
-\renewcommand{\syntleft}{\itshape}
-\renewcommand{\syntright}{}
-\renewcommand{\ulitleft}{\sffamily\bfseries}
-\renewcommand{\litleft}{\sffamily}
-\renewcommand{\litright}{}
+\begin{figure}[h]
+  \centering
 
-\begin{grammar}
-<\M> ::= "method" $\H$ \bo~$e$ \bc
+  \grammarindent3.4em
+  \renewcommand{\grammarlabel}[2]{$#1$\hfill#2}
+  \renewcommand{\syntleft}{\itshape}
+  \renewcommand{\syntright}{}
+  \renewcommand{\ulitleft}{\sffamily\bfseries}
+  \renewcommand{\litleft}{\sffamily}
+  \renewcommand{\litright}{}
 
-<\O> ::= "object" \bo~$\*\M*$ \bc
+  \vspace{1em}
+  \begin{minipage}{11.7em}
+    \begin{grammar}
+      <\M> ::= "method" $\H$ \bo~$e$ \bc
 
-<\H> ::= <m>`('$\*x : \tau*$`)' $\to$ $\tau$
+      <\O> ::= "object" \bo~$\*\M*$ \bc
 
-<\tau> ::= \bo~$\*\H*$ \bc
+      <\H> ::= <m>`('$\*x : \tau*$`)' $\to$ $\tau$
 
-<e> ::= <x> | "self" | <e>`.'<m>($\*e*$) | $\O$
-\end{grammar}
+      <\tau> ::= \bo~$\*\H*$ \bc
 
-\caption{Tiny Grace abstract syntax}
-\label{fig:abstract-syntax}
+      <e> ::= <x> | "self" | <e>`.'<m>($\*e*$) | $\O$
+    \end{grammar}
+  \end{minipage}
 
+  \caption{Tiny Grace abstract syntax}
+  \label{fig:abstract-syntax}
 \end{figure}
 
