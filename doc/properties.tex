@@ -24,7 +24,7 @@
     Rule~\ref{eq:type-obj} guarantees that the requested method always exists in
     the receiver, which is the only requirement for $\sto$ to be applied to this
     form of method request.  The relation is satisfied as long as the
-    substitution operation produces an outcome, so due to
+    substitution operation produces an outcome, so by
     Lemma~\ref{lem:sub-complete}, this single step of $\sto$ is guaranteed to
     complete and produce a new expression $e^\prime$.
   \end{proof}
@@ -67,7 +67,7 @@
 
       \case{\ref{eq:sub-none}}{e = y~\mathbf{where}~y \neq \xs}
       $[e^\prime/\xs]y \bto y$ and $\gctx{y}{\tau}$, so $\tau^\prime = \tau$.
-      Due to Lemma~\ref{lem:sub-reflexive}, $\tau^\prime \sub \tau$.
+      By Lemma~\ref{lem:sub-reflexive}, $\tau^\prime \sub \tau$.
 
       \case{\ref{eq:sub-req}}{e = e_0.m(\*e_i*)}
       $\Gamma \vdash e_0 : \tau_0, \*e_i : \sigma_i*$.  By induction,
@@ -80,7 +80,7 @@
       and as $\tau_0^\prime \sub \tau_0$, by Rule~\ref{eq:type-sub} there exists
       a method with head $m(\*x_i : \upsilon_i^\prime*) \to \sigma$ in
       $\tau_0^\prime$ where $\upsilon_i \sub \upsilon_i^\prime$ and
-      $\sigma \sub \tau$.  Due to Lemma~\ref{lem:sub-transitive}, $\*\sigma_i
+      $\sigma \sub \tau$.  By Lemma~\ref{lem:sub-transitive}, $\*\sigma_i
       \sub \upsilon_i^\prime*$, so $\ctx{\Gamma, \xs :
       \upsilon}{e_0^\prime.m(\*e_i^\prime*)}{\sigma}$.  This means that $\sigma
       = \tau^\prime$, so $\tau^\prime \sub \tau$.
@@ -91,12 +91,12 @@
       with $\*\ctx{\Gamma, x : \upsilon}{e_i^\prime}{\sigma_i^\prime}*$ where
       $\*\sigma_i^\prime \sub \sigma_i*$.  This means the object remains
       well-typed, with no change in the static type of the object, so
-      $\tau^\prime = \tau$.  Due to Lemma~\ref{lem:sub-reflexive}, $\tau^\prime
+      $\tau^\prime = \tau$.  By Lemma~\ref{lem:sub-reflexive}, $\tau^\prime
       \sub \tau$.
 
       \case{\ref{eq:sub-self}}{e = \object{\*\M_i*}, \xs = \self}
       $[e^\prime/\self]\object{\*\M_i*} \bto \object{\*\M_i*}$ and
-      $\gctx{\object{\*\M_i*}}{\tau}$, so $\tau^\prime = \tau$.  Due to
+      $\gctx{\object{\*\M_i*}}{\tau}$, so $\tau^\prime = \tau$.  By
       Lemma~\ref{lem:sub-reflexive}, $\tau^\prime \sub \tau$.
     \end{proof}
   \end{lemma}
@@ -108,7 +108,7 @@
 %
     \begin{align*}
       &e = \object{\*\M_i*}.m(\*\O_i*) &
-      \method{m}{\*x_i : \upsilon_i*}{\sigma}{e_m} \in \*\M_i* \\
+      \method{m}{\*x_i : \upsilon_i*}{\tau}{e_m} \in \*\M_i* \\
       &e^\prime = [\*\O_i/x_i*, \object{\*\M_i*}/\self]e_m &
     \end{align*}
 
@@ -122,12 +122,11 @@
       \*\upsilon^\prime_i \sub \upsilon_i*
     \end{displaymath}
 
-    \noindent By Lemma~? $\*x_i : \upsilon_i*, \self : \type{\H_i} \vdash e_m :
-    \tau$ for some type $\tau$ where $\tau \sub \sigma$.  By Lemma~?, $\G, \*x_i
-    : \upsilon_i*, \self : \type{\H_i} \vdash e_m : \tau$.  Then, by
+    \noindent By Rule~\ref{eq:type-meth}, $\ctx{\G,\*x_i :
+    \upsilon_i*}{e_m}{\sigma}$ where $\sigma \sub \tau$. By
     Lemma~\ref{lem:preservation}, $\G \vdash [\*\O_i/x_i,\O/\self*]e_m :
-    \tau^\prime$ where $\tau^\prime \sub \tau$.  Due to
-    Lemma~\ref{lem:sub-transitive}, $\tau^\prime \sub \sigma$.
+    \sigma^\prime$ where $\sigma^\prime \sub \sigma$.  As $\sigma^\prime =
+    \tau^\prime$, by Lemma~\ref{lem:sub-transitive}, $\tau^\prime \sub \sigma$.
   \end{proof}
 
 \end{theorem}
