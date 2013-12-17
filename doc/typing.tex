@@ -1,5 +1,4 @@
-\section{Typing}
-\label{sec:typing}
+\section{Typing}\label{sec:typing}
 
 A Tiny Grace program $(\*\methh{\H_i}{e_i}*, e)$ is well-formed if we can
 produce a type $\tau$ for $e$ in the context of its object body.  This can be
@@ -13,8 +12,7 @@ expressed with the typing rules in Section~\ref{sec:typing-rules} as:
   \DisplayProof
 \end{equation}
 
-\subsection{Subtyping}
-\label{sec:subtyping}
+\subsection{Subtyping}\label{sec:subtyping}
 
 The definition of the subtyping operator $\sub$ is given in
 Figure~\ref{fig:subtyping}.  A type $\tau$ is a subtype of any type
@@ -37,12 +35,10 @@ type.  Subtyping over a sequence is written as $\*\tau^\prime_i <: \tau_i*$.
     \DisplayProof
   \end{equation}
 
-  \caption{Tiny Grace subtyping}
-  \label{fig:subtyping}
+  \caption{Tiny Grace subtyping}\label{fig:subtyping}
 \end{figure}
 
-\subsection{Typing Rules}
-\label{sec:typing-rules}
+\subsection{Typing Rules}\label{sec:typing-rules}
 
 The typing rules for expressions and method declarations is given in
 Figure~\ref{fig:typing}.  An environment $\G$ is a finite mapping from variable
@@ -95,12 +91,10 @@ $(\*\M*, e)$ is well-formed.
     \DisplayProof
   \end{equation}
 
-  \caption{Tiny Grace expression and method typing rules}
-  \label{fig:typing}
+  \caption{Tiny Grace expression and method typing rules}\label{fig:typing}
 \end{figure}
 
-\subsection{Example}
-\label{sec:typing-example}
+\subsection{Example}\label{sec:typing-example}
 
 \begin{scope}
 
