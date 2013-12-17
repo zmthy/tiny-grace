@@ -48,13 +48,13 @@ The typing rules for expressions and method declarations is given in
 Figure~\ref{fig:typing}.  An environment $\G$ is a finite mapping from variable
 names to types, written $\*\xs_i : \tau_i*$.  The empty environment is written
 $\varnothing$.  Environments can be concatenated together, typically written
-$\G,\*\xs_i : \tau_i*$, and variables that exist in both environments use the
-mapping in the latter environment.  The typing judgement for expressions has the
-form $\gctx{e}{\tau}$, meaning that in the environment $\G$, $e$ has the type
-$\tau$.  The typing judgement for methods has the form $\gmctx{\M}$, meaning
-that in the environment $\G$, the method $\M$ is well-formed. The typing
-judgement for programs has the form $\pjdg{\*\M*}{e}$, meaning that the
-program $(\*\M*, e)$ is well-formed.
+$\G,\*\xs_i : \tau_i*$, with variables that exist in both environments bound to
+the mapping in the latter environment.  The typing judgement for expressions has
+the form $\gctx{e}{\tau}$, meaning that in the environment $\G$, $e$ has the
+type $\tau$.  The typing judgement for methods has the form $\gmctx{\M}$,
+meaning that in the environment $\G$, the method $\M$ is well-formed. The typing
+judgement for programs has the form $\pjdg{\*\M*}{e}$, meaning that the program
+$(\*\M*, e)$ is well-formed.
 
 \begin{figure}[h]
   \centering
@@ -123,11 +123,11 @@ program $(\*\M*, e)$ is well-formed.
   bindings:
 
   \begin{lstlisting}
-@$\vlt =$@ { value() -> {} }
-@$\wrt =$@ { wrap(x : {}) -> @$\vlt$@ }
-@$\idt =$@ { id(y : {}) -> {} }
-@$\vob =$@ object { method value() -> {} { x } }
-@$\aob =$@ object { method id(y : {}) -> {} { y } }
+$\vlt =$ { value() -> {} }
+$\wrt =$ { wrap(x : {}) -> $\vlt$ }
+$\idt =$ { id(y : {}) -> {} }
+$\vob =$ object { method value() -> {} { x } }
+$\aob =$ object { method id(y : {}) -> {} { y } }
   \end{lstlisting}
 
   \noindent Working backwards, we can begin by applying Rule~\ref{eq:type-prg}
@@ -153,7 +153,8 @@ program $(\*\M*, e)$ is well-formed.
 
   \noindent This requires that we ensure the \lstinline{wrap} method is
   well-formed in the environment holding the object type as $\self$, defined as
-  $\G = \self : \wrt$, using Rule~\ref{eq:type-meth}:
+  $\G = \self : \wrt$, using Rule~\ref{eq:type-meth} (subtyping is reflexive, so
+  we don't bother elaborating $\vlt \sub \vlt$):
 %
   \begin{equation}
     \name{Wrap}\label{eq:typex-wrap}

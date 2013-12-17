@@ -1,12 +1,12 @@
 \section{Language}
 \label{sec:language}
 
-A Tiny Grace program consists of a pair containing an object body and an
-expression which will be evaluated in the scope of the body. Unlike standard
-Grace, parentheses and type information is always required.  As there is no type
-aliasing, type information is always a type literal, so the current language is
-fairly verbose.  Tiny Grace programs are usually valid Grace programs, with the
-exception that variables may shadow method names.
+A Tiny Grace program is a pair containing an object body and an expression which
+will be evaluated in the scope of the body. Unlike standard Grace, parentheses
+and type information is always required.  As there is no type aliasing, type
+information is always a type literal, so the current language is fairly verbose.
+Tiny Grace programs are usually valid Grace programs, with the exception that
+variables may shadow method names.
 
 As an example, we will model a constructor that takes an object, and `wraps' it
 in another object, behind the \lstinline{value} method.

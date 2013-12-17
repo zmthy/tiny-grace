@@ -57,33 +57,35 @@
     \begin{proof}
       By induction on the derivation of $\ctx{\G, \xs : \upsilon}{e}{\tau}$.
 
-      \case{\ref{eq:sub-var}}{e = \xs}
-      $\ctx{\G, e : \upsilon}{e}{\upsilon}$, so $\tau = \upsilon$.
-      $[e^\prime/\xs]e \bto e^\prime$ and $\gctx{e^\prime}{\upsilon^\prime}$,
-      so $\tau^\prime = \upsilon^\prime$.  As $\upsilon^\prime \sub \upsilon$,
-      $\tau^\prime \sub \tau$.
+      \begin{match}
+        \case{\ref{eq:sub-var}}{e = \xs}
+        $\ctx{\G, e : \upsilon}{e}{\upsilon}$, so $\tau = \upsilon$.
+        $[e^\prime/\xs]e \bto e^\prime$ and $\gctx{e^\prime}{\upsilon^\prime}$,
+        so $\tau^\prime = \upsilon^\prime$.  As $\upsilon^\prime \sub \upsilon$,
+        $\tau^\prime \sub \tau$.
 
-      \case{\ref{eq:sub-none}}{e = y~\mathbf{where}~y \neq \xs}
-      $[e^\prime/\xs]e \bto e$ and $\gctx{e}{\tau}$, so $\tau^\prime = \tau$.
-      As $\sub$ is reflexive, $\tau^\prime \sub \tau$.
+        \case{\ref{eq:sub-none}}{e = y~\mathbf{where}~y \neq \xs}
+        $[e^\prime/\xs]e \bto e$ and $\gctx{e}{\tau}$, so $\tau^\prime = \tau$.
+        As $\sub$ is reflexive, $\tau^\prime \sub \tau$.
 
-      \case{\ref{eq:sub-req}}{e = e_0.m(\*e_i*)}
-      $e_0 \bto e^\prime_0$ and $\*e_i \bto e^\prime_i*$ where $\Gamma, \xs :
-      \upsilon \vdash e^\prime_0 : \sigma, \*e^\prime_i : \upsilon^\prime*$.
+        \case{\ref{eq:sub-req}}{e = e_0.m(\*e_i*)}
+        $e_0 \bto e^\prime_0$ and $\*e_i \bto e^\prime_i*$ where $\Gamma, \xs :
+        \upsilon \vdash e^\prime_0 : \sigma, \*e^\prime_i : \upsilon^\prime*$.
 
-      \case{\ref{eq:sub-obj}}{e = \object{\*\M_i*}, \xs = x}
-      Step into method bodies.  Trivial inductive step, as parameters may not
-      shadow variables.
+        \case{\ref{eq:sub-obj}}{e = \object{\*\M_i*}, \xs = x}
+        Step into method bodies.  Trivial inductive step, as parameters may not
+        shadow variables.
 
-      \case{\ref{eq:sub-self}}{e = \object{\*\M_i*}, \xs = \self}
-      $[e^\prime/\self]e \bto e$ and $\gctx{e}{\tau}$, so $\tau^\prime =
-      \tau$. As $\sub$ is reflexive, $\tau^\prime \sub \tau$.
+        \case{\ref{eq:sub-self}}{e = \object{\*\M_i*}, \xs = \self}
+        $[e^\prime/\self]e \bto e$ and $\gctx{e}{\tau}$, so $\tau^\prime =
+        \tau$. As $\sub$ is reflexive, $\tau^\prime \sub \tau$.
+      \end{match}
     \end{proof}
   \end{lemma}
 
   \begin{proof}
-    By induction on a derivation of $e \sto e^\prime$.  The inductive step for
-    \textsc{R-Rec} and \textsc{R-Arg} is trivial, so only \textsc{R-Req}
+    By induction on a derivation of $e \sto e^\prime$.  The inductive steps for
+    \textsc{R-Rec} and \textsc{R-Arg} are trivial, so only \textsc{R-Req}
     remains.
 %
     \begin{align*}
@@ -115,12 +117,15 @@
 \begin{theorem}[Type Soundness]
   \label{th:type-soundness}
 
-  If $\varnothing \vdash e : \tau$ and $e \stot e^\prime$ with $e^\prime$ in
-  normal form, then $e^\prime$ is an object literal $\O$ with $\varnothing
-  \vdash \O : \tau^\prime$ where $\tau^\prime \sub \tau$.
+  If $\gctx{e}{\tau}$, then $e \stot \O$ with $\gctx{e}{\tau^\prime}$ where
+  $\tau^\prime \sub \tau$.
 
   \begin{proof}
     Immediate from Theorems~\ref{th:progress} and~\ref{th:preservation}.
   \end{proof}
 \end{theorem}
+
+\noindent This proves that for a Tiny Grace program $(\*\M*, e)$, if
+$\pjdg{\*\M*}{e}$, then the program will always successfully run to the
+production of an object literal.
 

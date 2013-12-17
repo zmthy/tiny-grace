@@ -20,6 +20,8 @@ issues:
 
 \item Type aliases for recursive types
 
+\item Outer semantics and typing
+
 \item Inheritance semantics and typing
 
 \item Dialect semantics
@@ -53,7 +55,6 @@ implement scope, as objects can be nested.  This requires a more complicated
 substitution algorithm which can substitute both variables and \self, but with
 only variables crossing object boundaries.  As the language does not feature
 casting, type soundness guarantees program completion, whereas FJ may halt on
-invalid casts.  Without match-case casting Tiny Grace is strictly less powerful
-than FJ, as lost type information cannot be recovered, and recursive types
-cannot be expressed.
+invalid casts.  Tiny Grace is strictly less powerful than FJ, as lost type
+information cannot be recovered, and recursive types cannot be expressed.
 

@@ -6,12 +6,12 @@
 \def\theauthor{Timothy Jones}
 
 \usepackage[
-pdftitle={\thetitle},
-pdfauthor={\theauthor},
-colorlinks,
-urlcolor=black,
-linkcolor=black,
-citecolor=black
+  pdftitle={\thetitle},
+  pdfauthor={\theauthor},
+  colorlinks,
+  urlcolor=black,
+  linkcolor=black,
+  citecolor=black
 ]{hyperref}
 
 
@@ -68,38 +68,40 @@ citecolor=black
 % Listings settings.
 
 \lstdefinelanguage{TinyGrace}{%
-keywords={object,method,type,self,outer},
-sensitive=true,
-literate=
+  keywords={object,method,type,self,outer},
+  sensitive=true,
+  literate=
     {'}{$^\prime$}1
     {->\ }{$\to$ }1
 }
 
 \lstset{%
-basicstyle=\sffamily,
-keywordstyle=\bfseries,
-xleftmargin=1.5em,
-columns=fullflexible,
-language=TinyGrace,
-escapechar=@
+  basicstyle=\sffamily,
+  keywordstyle=\bfseries,
+  xleftmargin=1.5em,
+  columns=fullflexible,
+  language=TinyGrace,
+  mathescape
 }
 
 
 % Theorem definitions.
 
-\newtheoremstyle{theorem}{}{}{\itshape}{}{}{.}{.5em}
-    {\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
+\newtheoremstyle{theorem}{}{1em}{\itshape\addtolength\parskip{.5em}}{}{}{.}
+  {.5em}{\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
 \theoremstyle{theorem}
 \newtheorem{theorem}{Theorem}
 
-\newtheoremstyle{lemma}{}{}{\itshape\addtolength{\leftskip}{1em}}{}{}{.}{.5em}
-    {\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
+\newtheoremstyle{lemma}{}{0em}{\itshape\addtolength\leftskip{1em}}{}{}{.}{.5em}
+  {\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
 \theoremstyle{lemma}
 \newtheorem{lemma}{Lemma}[theorem]
 
-\renewenvironment{proof}{\vspace{.5em}\noindent\upshape\textsc{Proof.}}{\qed}
+\renewenvironment{proof}
+  {\noindent\upshape\addtolength\parskip{-.5em}\textsc{Proof.}}{\qed}
 
-\newcommand{\case}[2]{\vspace{.5em}\noindent\textsc{Case} #1: $#2$\\}
+\newenvironment{match}{\addtolength\parskip{.5em}}{}
+\newcommand{\case}[2]{\noindent\textsc{Case} #1: $#2$\\}
 
 \newenvironment{scope}{}{}
 
