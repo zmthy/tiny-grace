@@ -1,5 +1,4 @@
-\section{Language}
-\label{sec:language}
+\section{Language}\label{sec:language}
 
 A Tiny Grace program consists of a pair containing an object body and an
 expression which will be evaluated in the scope of the body. Unlike standard
@@ -38,8 +37,7 @@ self.wrap(object {
 the object passed to \lstinline{wrap}.  As mentioned above, the type checker
 will not allow a request for the method \lstinline{id} on the result.
 
-\subsection{Syntax}
-\label{sec:syntax}
+\subsection{Syntax}\label{sec:syntax}
 
 The abstract syntax for Tiny Grace is defined in
 Figure~\ref{fig:abstract-syntax}.  The metavariable $\M$ ranges over methods;
@@ -81,7 +79,6 @@ any pair of the form $(\*\M*, e)$.
     \end{grammar}
   \end{minipage}
 
-  \caption{Tiny Grace abstract syntax}
-  \label{fig:abstract-syntax}
+  \caption{Tiny Grace abstract syntax}\label{fig:abstract-syntax}
 \end{figure}
 

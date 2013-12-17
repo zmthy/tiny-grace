@@ -1,5 +1,4 @@
-\section{Reduction}
-\label{sec:reduction}
+\section{Reduction}\label{sec:reduction}
 
 Given a Tiny Grace program $(\*\M*, e)$, we can `run' $e$ in the scope of
 $\*\M*$ by applying substitution from Section~\ref{sec:substitution} and
@@ -7,8 +6,7 @@ big-step reduction from Section~\ref{sec:reduction-semantics} to
 $[\object{\*\M*}/\self]e \stot \O$, producing an outcome in the form of the
 object literal $\O$.
 
-\subsection{Substitution}
-\label{sec:substitution}
+\subsection{Substitution}\label{sec:substitution}
 
 The substitution used in Tiny Grace reduction is non-trivially different from
 standard substitution, so it is redefined in Figure~\ref{fig:substitution}.
@@ -54,12 +52,10 @@ Rule~\ref{eq:sub-self}, which prevents $\self$ from changing for inner objects.
     \DisplayProof
   \end{equation}
 
-  \caption{Big-step semantics of Tiny Grace substitution}
-  \label{fig:substitution}
+  \caption{Big-step semantics of Tiny Grace substitution}\label{fig:substitution}
 \end{figure}
 
-\subsection{Reduction Semantics}
-\label{sec:reduction-semantics}
+\subsection{Reduction Semantics}\label{sec:reduction-semantics}
 
 The rules for the reduction relation $\sto$ are given in
 Figure~\ref{fig:reduction}.  The relation is written $e \sto e^\prime$, meaning
@@ -80,7 +76,8 @@ reduction $e \stot \O$ is the big-step form of the reduction semantics.
   \begin{equation}
     \tag{\textsc{R-Arg}}\label{eq:red-arg}
     \AxiomC{$e_i \sto e_i^\prime$}
-    \UnaryInfC{$\O.m(\dots, e_i, \dots) \sto \O.m(\dots, e_i^\prime, \dots)$}
+    \UnaryInfC{$\O.m(\*\O_i*, e_i, \*e_i*) \sto
+      \O.m(\*\O_i*, e_i^\prime, \*e_i*)$}
     \DisplayProof
   \end{equation}
 
@@ -91,8 +88,7 @@ reduction $e \stot \O$ is the big-step form of the reduction semantics.
     \DisplayProof
   \end{equation}
 
-  \caption{Small-step semantics of Tiny Grace reduction}
-  \label{fig:reduction}
+  \caption{Small-step semantics of Tiny Grace reduction}\label{fig:reduction}
 \end{figure}
 
 \subsection{Example}
