@@ -1,0 +1,353 @@
+\documentclass[xcolor=pdftex,x11names]{beamer}
+
+\input{prelude}
+
+\usepackage{syntax}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bussproofs}
+
+\title{\huge Tiny Grace}
+\subtitle{\Large A Structurally Typed Language}
+\author{Timothy Jones}
+\institution{Victoria University of Wellington}
+\email{tim}
+\date{December 20, 2013}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Introduction}
+
+\begin{frame}
+  \frametitle{Tiny Grace (0.1.0)}
+
+  A tiny subset of Grace
+
+  \begin{itemize}\itemsep1em
+    \item Simple reduction semantics
+
+    \item Static typing
+  \end{itemize}
+
+  Safer but less powerful than Featherweight Java.  Missing:
+
+  \begin{itemize}\itemsep1em
+    \item Safe casting with match-case
+
+    \item Type aliases for recursive types
+  \end{itemize}
+\end{frame}
+
+
+\section{The Language}
+
+\begin{frame}[fragile]
+  \frametitle{The Language}
+
+  \grammarindent3.4em
+  \renewcommand{\grammarlabel}[2]{$#1$\hfill#2}
+  \renewcommand{\syntleft}{\itshape}
+  \renewcommand{\syntright}{}
+  \renewcommand{\ulitleft}{\sffamily\bfseries}
+  \renewcommand{\litleft}{\sffamily}
+  \renewcommand{\litright}{}
+
+  \begin{grammar}
+    <\M> ::= "method" $\H$ \bo~$e$ \bc
+
+    <\O> ::= "object" \bo~$\*\M*$ \bc
+
+    <\H> ::= <m>`('$\*x : \tau*$`)' $\to$ $\tau$
+
+    <\tau> ::= \bo~$\*\H*$ \bc
+
+    <e> ::= <x> | "self" | <e>`.'<m>($\*e*$) | $\O$
+  \end{grammar}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{A Program}
+
+  \begin{lstlisting}
+method wrap(x : {}) -> { value() -> {} } {
+  object {
+    method value() -> {} { x }
+  }
+}
+
+self.wrap(object {
+  method id(y : {}) -> {} { y }
+})
+  \end{lstlisting}
+\end{frame}
+
+
+\section{Typing}
+
+\begin{frame}
+  \frametitle{Typing}
+
+  \onslide<+->{\[ \pjdg{\*\M*}{e} \]}
+
+  \onslide<+->{\[ \gmctx{\M} \]}
+
+  \onslide<+->{\[ \gctx{e}{\tau} \]}
+
+  \onslide<+->{\[ \Sigma \vdash \tau \sub \tau^\prime \]}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Programs}
+
+  \begin{equation}
+    \tag{\textsc{T-Prg}}\label{eq:type-prg}
+    \AxiomC{$\ctx{\varnothing}{\object{\*\methh{\H_i}{e_i}*}}{\type{\*\H_i*}}$}
+    \AxiomC{$\ctx{\self : \type{\*\H_i*}}{e}{\tau}$}
+    \BinaryInfC{$\pjdg{\*\methh{\H_i}{e_i}*}{e}$}
+    \DisplayProof
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Methods}
+
+  \begin{equation}
+    \tag{\textsc{T-Meth}}\label{eq:type-meth}
+    \AxiomC{$\*x_i \notin \G*$}
+    \AxiomC{$\ctx{\G, \*x_i : \upsilon_i*}{e}{\sigma^\prime}$}
+    \AxiomC{$\sigma^\prime \sub \sigma$}
+    \TrinaryInfC{$\gmctx{\method{m}{\*x_i : \upsilon_i*}{\sigma}{e}}$}
+    \DisplayProof
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Expressions}
+
+  \begin{equation}
+    \tag{\textsc{T-Var}}\label{eq:type-var}
+    \AxiomC{$\gctx{\xs}{\G(\xs)}$}
+    \DisplayProof
+  \end{equation}
+
+  \begin{equation}
+    \tag{\textsc{T-Req}}\label{eq:type-req}
+    \AxiomC{$\gctx{e}{\type{\*\H_i*}}$}
+    \AxiomC{$m(\*x_i : \upsilon_i*) \to \sigma \in \*\H_i*$}
+    \AxiomC{$\gctx{\*e_i}{\upsilon^\prime_i}*$}
+    \AxiomC{$\*\upsilon^\prime_i \sub \upsilon_i*$}
+    \QuaternaryInfC{$\gctx{e.m(\*e_i*)}{\sigma}$}
+    \DisplayProof
+  \end{equation}
+
+  \begin{equation}
+    \tag{\textsc{T-Obj}}\label{eq:type-obj}
+    \AxiomC{$\overline{m_i \notin \*\H_i*\setminus\H_i}$}
+    \AxiomC{$\G, \self : \type{\*\H_i*} \vdash
+      \*\methh{\H_i}{e_i}~\checkmark*$}
+    \BinaryInfC{$\gctx{\object{\*\methh{\H_i}{e_i}*}}{\type{\*\H_i*}}$}
+    \DisplayProof
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Subtyping}
+
+  \def\rule{\type{\*\H_j*} \sub
+    \mset{m_i}{x_{ik}^\prime}{\upsilon_{ik}^\prime}{\sigma_i^\prime}}
+
+  \begin{equation}
+    \tag{\textsc{T-Assum}}\label{eq:type-assum}
+    \AxiomC{$\tau^\prime \sub \tau \in \Sigma$}
+    \UnaryInfC{$\Sigma \vdash \tau^\prime \sub \tau$}
+    \DisplayProof
+  \end{equation}
+
+  \begin{equation}
+    \tag{\textsc{T-Sub}}\label{eq:type-sub}
+    \footnotesize
+    \AxiomC{$\mh{m_i}{x_{ik}}{\upsilon_{ik}}{\sigma_i} \in \*\H_j*$}
+    \AxiomC{$\Sigma, \rule \vdash \*\upsilon_{ik}^\prime \sub \upsilon_{ik}*,
+      \*\sigma_i \sub \sigma_i^\prime*$}
+    \BinaryInfC{$\Sigma \vdash \rule$}
+    \DisplayProof
+    \normalsize
+  \end{equation}
+\end{frame}
+
+
+\section{Execution}
+
+\begin{frame}
+  \frametitle{Execution}
+
+  Substitution:
+  \[ [\O/\xs]e \]
+
+  Reduction step:
+  \[ e \sto e^\prime \]
+
+  Run a program $(\*\M*, e)$:
+  \[ [\object{\*\M*}/\self]e \stot \O \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Substitution}
+
+  \only<+>{%
+    \begin{equation}
+      \tag{\textsc{S-Var}}\label{eq:sub-var}
+      \AxiomC{$[\O/\xs]\xs \bto \O$}
+      \DisplayProof
+    \end{equation}
+
+    \begin{equation}
+      \tag{\textsc{S-None}}\label{eq:sub-none}
+      \AxiomC{$[\O/\xs]y \bto y \quad \mathbf{if}~\xs \neq y$}
+      \DisplayProof
+    \end{equation}
+
+    \begin{equation}
+      \tag{\textsc{S-Req}}\label{eq:sub-req}
+      \AxiomC{$[\O/\xs]e \bto e^\prime$}
+      \AxiomC{$\*[\O/\xs]e_i \bto e_i^\prime*$}
+      \BinaryInfC{$[\O/\xs]e.m(\*e_i*) \bto e^\prime.m(\*e_i^\prime*)$}
+      \DisplayProof
+    \end{equation}
+  }
+
+  \only<+>{%
+    \begin{equation}
+      \tag{\textsc{Self}}\label{eq:sub-self}
+      \AxiomC{$[\O/\self]\object{\*\M_i*} \bto \object{\*\M_i*}$}
+      \DisplayProof
+    \end{equation}
+
+    \begin{equation}
+      \tag{\textsc{S-Obj}}\label{eq:sub-obj}
+      \AxiomC{$\*[\O/x]e_i \bto e_i^\prime*$}
+      \UnaryInfC{$[O/x]\object{\*\methh{\H_i}{e_i}*} \bto
+        \object{\*\methh{\H_i}{e_i^\prime}*}$}
+      \DisplayProof
+    \end{equation}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Reduction}
+
+  \begin{equation}
+    \tag{\textsc{R-Rec}}\label{eq:red-rec}
+    \AxiomC{$e \sto e^\prime$}
+    \UnaryInfC{$e.m(\*e_i*) \sto e^\prime.m(\*e_i*)$}
+    \DisplayProof
+  \end{equation}
+
+  \begin{equation}
+    \tag{\textsc{R-Arg}}\label{eq:red-arg}
+    \AxiomC{$e_i \sto e_i^\prime$}
+    \UnaryInfC{$\O.m(\*\O_i*, e_i, \*e_i*) \sto
+      \O.m(\*\O_i*, e_i^\prime, \*e_i*)$}
+    \DisplayProof
+  \end{equation}
+
+  \begin{equation}
+    \tag{\textsc{R-Req}}\label{eq:red-req}
+    \AxiomC{$\method{m}{\*x_i : \upsilon_i*}{\sigma}{e} \in \*\M*$}
+    \UnaryInfC{$\object{\*\M*}.m(\*\O_i*) \sto [\*\O_i/x_i*,\ \object{\*\M*}/\self]e$}
+    \DisplayProof
+  \end{equation}
+\end{frame}
+
+
+\section{Properties}
+
+\begin{frame}
+  \frametitle{Properties}
+
+  Proof of Type Soundness by Progress and Preservation
+\end{frame}
+
+\begin{frame}
+  \frametitle{Progress}
+
+  \onslide<+->{%
+    \begin{theorem}[Progress]
+      Given a well-formed program $(\*\M*, e)$, any expression $e^\prime$ in the
+      relation $e \stot e^\prime$ is either an object literal $\O$ or can be
+      reduced by an application of $\sto$.
+    \end{theorem}
+  }
+
+  \onslide<+->{%
+    \begin{lemma}[Substitution Completeness]
+      Substitution on a well-typed term always completes.
+    \end{lemma}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Preservation}
+
+  \onslide<+->{%
+    \begin{theorem}
+      If $\gctx{e}{\tau}$ and $e \sto e^\prime$, then
+      $\gctx{e^\prime}{\tau^\prime}$ for some $\tau^\prime \sub \tau$.
+    \end{theorem}
+  }
+
+  \onslide<+->{%
+    \begin{lemma}[Substitution Preservation]
+      If $\ctx{\Gamma, \xs : \upsilon}{e}{\tau}$ and
+      $\gctx{e^\prime}{\tau^\prime}$ where $\upsilon^\prime \sub \upsilon$, then
+      $\gctx{[e^\prime/\xs]e}{\tau^\prime}$ for some $\tau^\prime \sub \tau$.
+    \end{lemma}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Type Soundness}
+
+  \begin{theorem}[Type Soundness]
+    If $\gctx{e}{\tau}$, then $e \stot \O$ with $\gctx{e}{\tau^\prime}$ where
+    $\tau^\prime \sub \tau$.
+  \end{theorem}
+\end{frame}
+
+
+\section{Implementation}
+
+\begin{frame}
+  \frametitle{Minigrace Typing Dialect}
+
+  \url{http://ecs.vuw.ac.nz/~mwh/minigrace/js}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Agda Mechanisation}
+
+  \begin{lstlisting}[keywords={data,where}]
+data Term ($\Gamma$ : Ctx) : Type -> Set where
+  var : (x : Ident) -> {$\tau$ : lookup x $\Gamma$} -> Term $\Gamma$ $\tau$
+  req : Term $\Gamma$ $\tau$ -> (m : Ident) -> {$\M$ : method m $\tau$}
+    -> {n} (a : Vec (Term $\Gamma$ Type) n) -> {args $\M$ a}
+    -> {$\sigma$ : result $\M$} -> Term $\Gamma$ $\sigma$
+  obj : {n} (m : Vec $\M$ n) -> ($\tau$ : methods m) -> Term $\Gamma$ $\tau$
+  \end{lstlisting}
+\end{frame}
+
+
+\section{Specification}
+
+\begin{frame}
+  \frametitle{Specification}
+
+  \url{http://ecs.vuw.ac.nz/~tim/phd/tiny-grace.pdf}
+\end{frame}
+
+\end{document}
+

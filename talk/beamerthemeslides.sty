@@ -1,0 +1,106 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken and
+%%  modified by Timothy Jones.
+%%  Anyone can freely use or modify it for any purpose
+%%  without attribution.
+%%
+%%  Last Modified: December 5, 2013
+%%
+
+
+%% Beamer Layout %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{libertine}
+\usepackage{ascii}
+\renewcommand*\ttfamily{\asciifamily}
+\usefonttheme{serif}
+
+\gdef\thetitle{}
+\def\title#1{\gdef\thetitle{#1}}
+
+\gdef\thesubtitle{}
+\def\subtitle#1{\gdef\thesubtitle{#1}}
+
+\gdef\theauthor{}
+\def\author#1{\gdef\theauthor{#1}}
+
+\gdef\theemail{}
+\def\email#1{\gdef\theemail{#1@ecs.vuw.ac.nz}}
+
+\gdef\theinstitution{}
+\def\institution#1{\gdef\theinstitution{#1}}
+
+\gdef\thedate{}
+\def\date#1{\gdef\thedate{#1}}
+
+\renewcommand\maketitle{%
+  \setbeamertemplate{footline}{}
+
+  \begin{frame}
+    \rmfamily\centering
+    \huge\thetitle\par\vspace{.2em}
+    \Large\thesubtitle\par\vspace{3em}
+    \large\theauthor\par\vspace{.8em}
+    \theinstitution\par\vspace{.2em}
+    \normalsize\href{mailto:\theemail}{\tt\theemail}\par\vspace{2.5em}
+    \thedate
+  \end{frame}
+
+  \addtolength\parskip{1em}
+
+  \addtocounter{framenumber}{-1}
+  \setbeamertemplate{footline}
+    {\raisebox{1.5em}{\makebox[\paperwidth]
+      {\hfill\makebox[3.5em]{\scriptsize\insertframenumber}}}}
+}
+
+\newcommand\makemeta{%
+  \begin{beamercolorbox}[colsep=1.5pt]{upper separation line head}
+  \end{beamercolorbox}
+  \begin{beamercolorbox}{section in head/foot}
+    \vskip2pt\insertnavigation{\paperwidth}\vskip2pt
+  \end{beamercolorbox}%
+  \ifbeamer@theme@subsection%
+    \begin{beamercolorbox}[colsep=1.5pt]{middle separation line head}
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
+      leftskip=.3cm,rightskip=.3cm plus1fil]{subsection in head/foot}
+      \usebeamerfont{subsection in head/foot}\insertsubsectionhead
+    \end{beamercolorbox}%
+  \fi%
+  \begin{beamercolorbox}[colsep=1.5pt]{lower separation line head}
+  \end{beamercolorbox}
+}
+
+\setbeamertemplate{headline}{%
+  \begin{beamercolorbox}{section in head/foot}
+    \centering\vbox to 2.5em {\vfil\usebeamercolor[fg]{section in head/foot}
+      \insertsection\vfil}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[colsep=1.5pt]{lower separation line head}
+  \end{beamercolorbox}
+}
+
+\setbeamertemplate{footline}
+  {\raisebox{1.5em}{\makebox[\paperwidth]
+    {\hfill\makebox[3.5em]{\scriptsize\insertframenumber}}}}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor*{lower separation line head}{bg=Chartreuse4}
+\setbeamercolor*{section in head/foot}{fg=black!70,bg=black!10}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=red}
+\setbeamercolor*{example text}{fg=black}
+\setbeamercolor*{structure}{fg=black}
+
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
+
+%\renewcommand{\(}{\begin{columns}}
+%\renewcommand{\)}{\end{columns}}
+%\newcommand{\<}[1]{\begin{column}{#1}}
+%\renewcommand{\>}{\end{column}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
