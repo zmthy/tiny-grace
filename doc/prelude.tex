@@ -27,9 +27,9 @@
 \newcommand{\ctx}[3]{#1 \vdash #2 : #3}
 \newcommand{\gctx}[2]{\ctx{\G}{#1}{#2}}
 \newcommand{\ectx}[2]{\ctx{\varnothing}{#1}{#2}}
-\newcommand{\mctx}[2]{#1 \vdash #2~\mathrm{OK}}
+\newcommand{\mctx}[2]{#1 \vdash #2~\checkmark}
 \newcommand{\gmctx}[1]{\mctx{\G}{#1}}
-\newcommand{\pjdg}[2]{(#1, #2)~\mathrm{OK}}
+\newcommand{\pjdg}[2]{(#1, #2)~\checkmark}
 
 % Multiplicities with overline.
 \def\*#1*{\overline{#1}}
@@ -44,6 +44,8 @@
 \def\pc{{\sffamily\upshape)}}
 
 % Tiny Grace keywords and constructs.
+\newcommand{\mh}[4]{\overline{#1\text{\po}\*#2 : #3*\text{\pc} \to #4}}
+\newcommand{\mset}[4]{\text{\bo}\mh{#1}{#2}{#3}{#4}\text{\bc}}
 \newcommand{\mlst}[1]{\text{\lstinline{#1}}}
 \newcommand{\key}[1]{{\sffamily\bfseries#1}}
 \newcommand{\object}[1]{\text{\key{object}\bo}#1\text{\bc}}

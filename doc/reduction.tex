@@ -93,5 +93,94 @@ reduction $e \stot \O$ is the big-step form of the reduction semantics.
 
 \subsection{Example}
 
-\clearpage
+\begin{scope}
+  \def\ov{\overset{v}{\O}}
+  \def\oid{\overset{id}{\O}}
+
+  \def\x{\mlst{x}}
+  \def\y{\mlst{y}}
+
+  \def\vtype{\type{\head{value}{}{}}}
+  \def\wrap{\method{\mlst{wrap}}{\x : \type{}}{\vtype}{\ov}}
+  \def\mid{\method{\mlst{id}}{\y : \type{}}{\type{}}{\x}}
+  \def\exp{\self.\mlst{wrap}\text{\po}\oid\text{\pc}}
+
+  As the Section~\ref{sec:typing-example} demonstrated that the example program
+  was well-formed, we can run the program. Beginning with the example program:
+
+  \begin{lstlisting}
+(method wrap(x : {}) -> { value() -> {} } {
+  object { method value() -> {} { x } }
+}, self.wrap(object { method id(y : {}) -> {} { y } }))
+  \end{lstlisting}
+
+  \noindent We run the program by substituting the surrounding methods in an
+  object for $\self$.
+
+  \begin{lstlisting}
+[object{
+  method wrap(x : {}) -> { value() -> {} } {
+    object { method value() -> {} { x } }
+  }
+}/self]self.wrap(object { method id(y : {}) -> {} { y } })
+  \end{lstlisting}
+
+  \noindent This substitution uses Rule~\ref{eq:sub-var} to replace $\self$, as
+  well as Rule~\ref{eq:sub-self} on the argument to the \lstinline{wraq} method,
+  which has no effect and does not proceed further.
+
+  \begin{lstlisting}
+object{
+  method wrap(x : {}) -> { value() -> {} } {
+    object { method value() -> {} { x } }
+  }
+}.wrap(object { method id(y : {}) -> {} { y } })
+  \end{lstlisting}
+
+  \noindent Now a step of reduction takes place.  The top-level expression is a
+  request, so we apply Rule~\ref{eq:red-req}, replacing the request with a
+  substitution over the appropriate method's body.
+
+  \begin{lstlisting}
+[object { method id(y : {}) -> {} { y } }/x, object {
+  method wrap(x : {}) -> { value() -> {} } {
+    object { method value() -> {} { x } }
+  }
+}/self]object { method value() -> {} { x } }
+  \end{lstlisting}
+
+  \noindent The substitution of $\self$ applies Rule~\ref{eq:sub-self}, which
+  again has no effect.
+
+  \begin{lstlisting}
+[object{ method id(y : {}) -> {} { y } }/x]object{ method value() -> {} { x } }
+  \end{lstlisting}
+
+  \noindent The remaining substitution applies Rule~\ref{eq:sub-obj}, which
+  reaches into the object's method, replacing its body:
+
+  \begin{lstlisting}
+[object { method id(y : {}) -> {} { y } }/x]x
+  \end{lstlisting}
+
+  \noindent This is a simple application of Rule~\ref{eq:sub-var}.
+
+  \begin{lstlisting}
+object { method id(y : {)}) -> {} { y } }
+  \end{lstlisting}
+
+  \noindent Completing the application of Rule~\ref{eq:sub-obj} produces the
+  following expression:
+
+  \begin{lstlisting}
+object {
+  method value() -> {} {
+    object { method id(y : {}) -> {} { y }}
+  }
+}
+  \end{lstlisting}
+
+  \noindent As this expression is an object literal, there are no more rules
+  which can be applied and the execution is complete.
+\end{scope}
 

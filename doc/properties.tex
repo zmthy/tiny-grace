@@ -38,16 +38,34 @@
     For any type $\tau$, $\tau \sub \tau$.
 
     \begin{proof}
-
+      By induction on Rule~\ref{eq:type-sub}.  $\type{} \sub \type{}$ is a
+      derived axiom.  For every method $\M$ in $\tau$, if $\tau \sub \tau \vdash
+      \*\upsilon_{ik} \sub \upsilon_{ik}*, \*\sigma_i \sub \sigma_i*$ then $\tau
+      \sub \tau$.  As types cannot be infinite in size, this inductive
+      application is guaranteed to complete at every branch on $\tau = \type{}$.
     \end{proof}
   \end{lemma}
 
   \begin{lemma}[Subtyping Transitivity]\label{lem:sub-transitive}
-    For any types $\tau$, $\sigma$, and $\upsilon$, if $\tau \sub \sigma$ and
-    $\sigma \sub \upsilon$ then $\tau \sub \upsilon$.
+    For any types $\tau$, $\tau^\prime$, and $\tau^{\prime\prime}$, if $\tau
+    \sub \tau^\prime$ and $\tau^\prime \sub \tau^{\prime\prime}$ then $\tau \sub
+    \tau^{\prime\prime}$.
 
     \begin{proof}
-
+      By induction on Rule~\ref{eq:type-sub}.  For every type $\sigma$, $\sigma
+      \sub \type$ is a derived axiom.  For every method
+      $\mh{m_i}{x_{ik}^{\prime\prime}}{\upsilon_{ik}^{\prime\prime}}
+      {\sigma_i^{\prime\prime}}$ in $\tau^{\prime\prime}$, there exists a method
+      $\mh{m_i}{x_{ik}^\prime}{\upsilon_{ik}^\prime}{\sigma_i^\prime}$ in
+      $\tau^\prime$ where $\*\upsilon_{ik}^{\prime\prime} \sub
+      \upsilon_{ik}^\prime*$ and $\*\sigma_i^\prime \sub
+      \sigma_i^{\prime\prime}*$, and therefore a method
+      $\mh{m_i}{x_{ik}}{\upsilon_{ik}}{\sigma_i}$ where $\*\upsilon_{ik}^\prime
+      \sub \upsilon_{ik}*$ and $\*\sigma_i \sub \sigma_i^\prime*$, so if
+      $\*\upsilon_{ik}^{\prime\prime} \sub \upsilon_{ik}*$ and $\*\sigma_i \sub
+      \sigma_i^{\prime\prime}*$ then $\tau \sub \tau^{\prime\prime}$.  As types
+      cannot be infinite in size, this inductive application is guaranteed to
+      complete at every branch on $\tau^{\prime\prime} = \type{}$.
     \end{proof}
   \end{lemma}
 
