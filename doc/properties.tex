@@ -84,11 +84,11 @@
         so $\tau^\prime = \upsilon^\prime$.  As $\upsilon^\prime \sub \upsilon$,
         $\tau^\prime \sub \tau$.
 
-        \case{\ref{eq:sub-none}}{e = y~\mathbf{where}~y \neq \xs}
+        \case{\ref{eq:sub-none}}{e = y~\mathbf{where}~y\neq\xs}
         $[e^\prime/\xs]y \bto y$ and $\gctx{y}{\tau}$, so $\tau^\prime = \tau$.
         By Lemma~\ref{lem:sub-reflexive}, $\tau^\prime \sub \tau$.
 
-        \case{\ref{eq:sub-req}}{e = e_0.m(\*e_i*)}
+        \case{\ref{eq:sub-req}}{e = e_0.m (\*e_i*)}
         $\Gamma \vdash e_0 : \tau_0, \*e_i : \sigma_i*$.  By induction,
         $[e^\prime/\xs]e_0 \bto e^\prime_0$ and $\*[e^\prime/\xs]e_i \bto
         e^\prime_i*$ with $\Gamma, \xs : \upsilon \vdash e^\prime_0 :
@@ -104,8 +104,8 @@
         \upsilon}{e_0^\prime.m(\*e_i^\prime*)}{\sigma}$.  This means that $\sigma
         = \tau^\prime$, so $\tau^\prime \sub \tau$.
 
-        \case{\ref{eq:sub-obj}}{e = \object{\overline{\method{m}{\*x_{ik} :
-          \upsilon_{ik}*}{\sigma_i}{e_i}}}, \xs = x}
+        \case{\ref{eq:sub-obj}}{e = \object{\overline{\method{m}{\*x_{ik}:
+          \upsilon_{ik}*}{\sigma_i}{e_i}}}, \xs= x}
         $x \notin \*x_{ik}*$, so by induction $\*[e^\prime/x]e_i \bto e_i^\prime*$
         with $\*\ctx{\Gamma, x : \upsilon}{e_i^\prime}{\sigma_i^\prime}*$ where
         $\*\sigma_i^\prime \sub \sigma_i*$.  This means the object remains
@@ -113,7 +113,7 @@
         $\tau^\prime = \tau$.  By Lemma~\ref{lem:sub-reflexive}, $\tau^\prime
         \sub \tau$.
 
-        \case{\ref{eq:sub-self}}{e = \object{\*\M_i*}, \xs = \self}
+        \case{\ref{eq:sub-self}}{e = \object{\*\M_i*}, \xs= \self}
         $[e^\prime/\self]\object{\*\M_i*} \bto \object{\*\M_i*}$ and
         $\gctx{\object{\*\M_i*}}{\tau}$, so $\tau^\prime = \tau$.  By
         Lemma~\ref{lem:sub-reflexive}, $\tau^\prime \sub \tau$.
@@ -152,7 +152,9 @@
 \end{theorem}
 
 \begin{theorem}[Type Soundness]\label{th:type-soundness}
-  If $\gctx{e}{\tau}$, then $e \stot \O$ with $\gctx{e}{\tau^\prime}$ where
+  If $\gctx{e}{\tau}$ and $e \stot e^\prime$ with $e^\prime$ in normal form
+  (there is no $e^{\prime\prime}$ such that $e^\prime \sto e^{\prime\prime}$),
+  then $e^\prime$ is an object literal $\O$ with $\gctx{\O}{\tau^\prime}$ where
   $\tau^\prime \sub \tau$.
 
   \begin{proof}
@@ -162,5 +164,5 @@
 
 \noindent This proves that for a Tiny Grace program $(\*\M*, e)$, if
 $\pjdg{\*\M*}{e}$, then the program will always successfully run to the
-production of an object literal.
+production of an appropriate object literal.
 
