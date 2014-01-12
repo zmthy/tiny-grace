@@ -1,8 +1,8 @@
 \section{Properties}
 
 \begin{theorem}[Progress]\label{th:progress}
-  Given a well-formed program $(\*\M*, e)$, any expression $e^\prime$ in the
-  relation $e \stot e^\prime$ is either an object literal $\O$ or can be reduced
+  Given a well-formed program $(\*\M*,e)$, any expression $e\′$ in the
+  relation $e\stot e\′$ is either an object literal $\O$ or can be reduced
   by an application of $\sto$.
 
   \begin{lemma}[Substitution Completeness]\label{lem:sub-complete}
@@ -11,158 +11,149 @@
     \begin{proof}
       A well-typed program must have a finite size, which means every branch
       must bottom out on either a variable, \self, or an empty object literal,
-      all of which terminate substitution.  The remaining cases are trivially
+      all of which terminate substitution. The remaining cases are trivially
       recursive.
     \end{proof}
   \end{lemma}
 
   \begin{proof}
     A well-typed program has no free variables, so $\xs$ is never encountered in
-    reduction.  Inductive steps for method requests $e.m(\*e_i*)$ and
-    $\O.m(\*e_i*)$ are trivial, so we need only show that a method request
-    $\O.m(\*\O_i*)$ can always proceed and will always complete.
+    reduction. Inductive steps for method requests $e.m(\*e_a*)$ and
+    $\O.m(\*e_a*)$ are trivial, so we need only show that a method request
+    $\O.m(\*\O_a*)$ can always proceed and will always complete.
     Rule~\ref{eq:type-obj} guarantees that the requested method always exists in
     the receiver, which is the only requirement for $\sto$ to be applied to this
-    form of method request.  The relation is satisfied as long as the
+    form of method request. The relation is satisfied as long as the
     substitution operation produces an outcome, so by
     Lemma~\ref{lem:sub-complete}, this single step of $\sto$ is guaranteed to
-    complete and produce a new expression $e^\prime$.
+    complete and produce a new expression $e\′$.
   \end{proof}
 \end{theorem}
 
 \begin{theorem}[Preservation]\label{th:preservation}
-  If $\gctx{e}{\tau}$ and $e \sto e^\prime$, then $\gctx{e^\prime}{\tau^\prime}$
-  for some $\tau^\prime \sub \tau$.
+  If $\gctx{e}{\tau}$ and $e\sto e\′$, then $\gctx{e\′}{\tau\′}$
+  for some $\tau\′\sub\tau$.
 
   \begin{lemma}[Subtyping Reflexivity]\label{lem:sub-reflexive}
     For any type $\tau$, $\tau \sub \tau$.
 
     \begin{proof}
-      By induction on Rule~\ref{eq:type-sub}.  $\type{} \sub \type{}$ is a
-      derived axiom.  For every method $\M$ in $\tau$, if $\tau \sub \tau \vdash
-      \*\upsilon_{ik} \sub \upsilon_{ik}*, \*\sigma_i \sub \sigma_i*$ then $\tau
-      \sub \tau$.  As types cannot be infinite in size, this inductive
-      application is guaranteed to complete at every branch on $\tau = \type{}$.
+      By induction on Rule~\ref{eq:type-sub}. $\type{}\sub\type{}$ is a
+      derived axiom. For every method $\meth{m}{x}{\tau_p}{\tau_r}$ in $\tau$,
+      if $\cjdg{\*\tau_p\sub\tau_p*,\*\tau_r\sub\tau_r*}{\tau\sub\tau}$, then
+      $\tau\sub\tau$. As types cannot be infinite in size, this inductive
+      application is guaranteed to complete at every branch on $\tau=\type{}$.
     \end{proof}
   \end{lemma}
 
   \begin{lemma}[Subtyping Transitivity]\label{lem:sub-transitive}
-    For any types $\tau$, $\tau^\prime$, and $\tau^{\prime\prime}$, if $\tau
-    \sub \tau^\prime$ and $\tau^\prime \sub \tau^{\prime\prime}$ then $\tau \sub
-    \tau^{\prime\prime}$.
+    \newcommand\ta{\tau^{_a}}
+    \newcommand\tb{\tau^{_b}}
+    \newcommand\tc{\tau^{_c}}
+    \newcommand\xa{x^{_a}}
+    \newcommand\xb{x^{_b}}
+    \newcommand\xc{x^{_c}}
+
+    For any types $\ta$, $\tb$, and $\tc$, if $\ta\sub\tb$ and $\tb\sub\tc$ then
+    $\ta\sub\tc$.
 
     \begin{proof}
-      By induction on Rule~\ref{eq:type-sub}.  For every type $\sigma$, $\sigma
-      \sub \type$ is a derived axiom.  For every method
-      $\mh{m_i}{x_{ik}^{\prime\prime}}{\upsilon_{ik}^{\prime\prime}}
-      {\sigma_i^{\prime\prime}}$ in $\tau^{\prime\prime}$, there exists a method
-      $\mh{m_i}{x_{ik}^\prime}{\upsilon_{ik}^\prime}{\sigma_i^\prime}$ in
-      $\tau^\prime$ where $\*\upsilon_{ik}^{\prime\prime} \sub
-      \upsilon_{ik}^\prime*$ and $\*\sigma_i^\prime \sub
-      \sigma_i^{\prime\prime}*$, and therefore a method
-      $\mh{m_i}{x_{ik}}{\upsilon_{ik}}{\sigma_i}$ where $\*\upsilon_{ik}^\prime
-      \sub \upsilon_{ik}*$ and $\*\sigma_i \sub \sigma_i^\prime*$, so if
-      $\*\upsilon_{ik}^{\prime\prime} \sub \upsilon_{ik}*$ and $\*\sigma_i \sub
-      \sigma_i^{\prime\prime}*$ then $\tau \sub \tau^{\prime\prime}$.  As types
+      By induction on Rule~\ref{eq:type-sub}. For every type $\tau$,
+      $\tau\sub\type{}$ is a derived axiom. For every method
+      $\meth{m}{\xc}{\tc_p}{\tc_r}$ in $\tc$, there exists a method
+      $\meth{m}{\xb}{\tb_p}{\tb_r}$ in $\tb$ where $\*\tc_p\sub\tb_p*$ and
+      $\tb_r\sub\tc_r$, and therefore a method $\meth{m}{\xa}{\ta_p}{\ta_r}$
+      where $\*\tb_p\sub\ta_p*$ and $\ta_r\sub\tb_r$, so if
+      $\*\tc_p\sub\tc_p*$ and $\ta_r\sub\tc_r$ then $\ta\sub\tc$. As types
       cannot be infinite in size, this inductive application is guaranteed to
-      complete at every branch on $\tau^{\prime\prime} = \type{}$.
+      complete at every branch on $\tc = \type{}$.
     \end{proof}
   \end{lemma}
 
   \begin{lemma}[Substitution Preservation]\label{lem:preservation}
-    If $\ctx{\G, \xs : \upsilon}{e}{\tau}$, and
-    $\gctx{e^\prime}{\upsilon^\prime}$ where $\upsilon^\prime \sub \upsilon$,
-    then $\gctx{[e^\prime/\xs]e}{\tau^\prime}$ for some $\tau^\prime \sub \tau$.
+    If $\ctx{\G,\xs:\tau_x}{e}{\tau}$, and $\gctx{\O}{\tau_o}$ for any $\O$
+    where $\tau_o\sub\tau_x$, then $\gctx{[\O/\xs]e}{\tau\′}$ for some
+    $\tau\′\sub\tau$.
 
     \begin{proof}
-      By induction on the derivation of $\ctx{\G, \xs : \upsilon}{e}{\tau}$.
+      By induction on the derivation of $\ctx{\G,\xs:\tau_x}{e}{\tau}$.
 
       \begin{match}
-        \case{\ref{eq:sub-var}}{e = \xs}
-        $\ctx{\G, \xs : \upsilon}{\xs}{\upsilon}$, so $\tau = \upsilon$.
-        $[e^\prime/\xs]\xs \bto e^\prime$ and $\gctx{e^\prime}{\upsilon^\prime}$,
-        so $\tau^\prime = \upsilon^\prime$.  As $\upsilon^\prime \sub \upsilon$,
-        $\tau^\prime \sub \tau$.
+        \case{\ref{eq:sub-var}}{e=\xs}
+        $\ctx{\G,\xs:\tau_x}{\xs}{\tau_x}$, so $\tau=\tau_x$.
+        $[\O/\xs]\xs\bto\O$ and $\gctx{\O}{\tau_o}$. $\tau_o\sub\tau_x$, so
+        $\tau_o\sub\tau$.
 
-        \case{\ref{eq:sub-none}}{e = y~\mathbf{where}~y\neq\xs}
-        $[e^\prime/\xs]y \bto y$ and $\gctx{y}{\tau}$, so $\tau^\prime = \tau$.
-        By Lemma~\ref{lem:sub-reflexive}, $\tau^\prime \sub \tau$.
+        \case{\ref{eq:sub-none}}{e=y~\mathbf{where}~y\neq\xs}
+        $[\O/\xs]y\bto y$ and $\gctx{y}{\tau}$. By
+        Lemma~\ref{lem:sub-reflexive}, $\tau\sub\tau$.
 
-        \case{\ref{eq:sub-req}}{e = e_0.m (\*e_i*)}
-        $\Gamma \vdash e_0 : \tau_0, \*e_i : \sigma_i*$.  By induction,
-        $[e^\prime/\xs]e_0 \bto e^\prime_0$ and $\*[e^\prime/\xs]e_i \bto
-        e^\prime_i*$ with $\Gamma, \xs : \upsilon \vdash e^\prime_0 :
-        \tau_0^\prime, \*e^\prime_i : \sigma_i^\prime*$ where $\tau_0^\prime \sub
-        \tau_0$ and $\*\sigma_i^\prime \sub \sigma_i*$.  By
-        Rule~\ref{eq:type-req}, there exists a method with head $m(\*x_i :
-        \upsilon_i*) \to \tau$ in $\tau_0$ where $\*\sigma_i \sub \upsilon_i*$,
-        and as $\tau_0^\prime \sub \tau_0$, by Rule~\ref{eq:type-sub} there exists
-        a method with head $m(\*x_i : \upsilon_i^\prime*) \to \sigma$ in
-        $\tau_0^\prime$ where $\upsilon_i \sub \upsilon_i^\prime$ and
-        $\sigma \sub \tau$.  By Lemma~\ref{lem:sub-transitive}, $\*\sigma_i
-        \sub \upsilon_i^\prime*$, so $\ctx{\Gamma, \xs :
-        \upsilon}{e_0^\prime.m(\*e_i^\prime*)}{\sigma}$.  This means that $\sigma
-        = \tau^\prime$, so $\tau^\prime \sub \tau$.
+        \case{\ref{eq:sub-req}}{e=e_r.m (\*e_a*)}
+        $\G\vdash e_r:\tau_r,\*e_a:\tau_a*$. By induction, $[\O/\xs]e_r\bto
+        e_r\′$ and $\*[\O/\xs]e_a\bto e_a\′*$ with $\G,\xs:\tau_x\vdash
+        e_r\′:\tau_r\′,\*e\′_a:\tau_a\′*$ where $\tau_r\′\sub\tau_r$ and
+        $\*\tau_a\′\sub\tau_a*$. By Rule~\ref{eq:type-req}, there exists a
+        method with head $m(\*x_p:\tau_p*)\to\tau$ in $\tau_r$ where
+        $\*\tau_a\sub\tau_p*$. As $\tau_r\′\sub\tau_r$, by
+        Rule~\ref{eq:type-sub} and there exists a method with head
+        $m(\*x_p\′:\tau_p\′*)\to\tau\′$ in $\tau_r\′$ where
+        $\*\tau_p\sub\tau_p\′*$ and $\tau\′\sub\tau$. $\*\tau_a\sub\tau_p*$ and
+        $\*\tau_p\sub\tau_p\′*$, so by Lemma~\ref{lem:sub-transitive},
+        $\*\tau_a\sub\tau_p\′*$. Then by Rule~\ref{eq:type-req},
+        $\gctx{e_r\′.m(e_a\′)}{\tau\′}$.
 
-        \case{\ref{eq:sub-obj}}{e = \object{\overline{\method{m}{\*x_{ik}:
-          \upsilon_{ik}*}{\sigma_i}{e_i}}}, \xs= x}
-        $x \notin \*x_{ik}*$, so by induction $\*[e^\prime/x]e_i \bto e_i^\prime*$
-        with $\*\ctx{\Gamma, x : \upsilon}{e_i^\prime}{\sigma_i^\prime}*$ where
-        $\*\sigma_i^\prime \sub \sigma_i*$.  This means the object remains
-        well-typed, with no change in the static type of the object, so
-        $\tau^\prime = \tau$.  By Lemma~\ref{lem:sub-reflexive}, $\tau^\prime
-        \sub \tau$.
+        \case{\ref{eq:sub-obj}}
+          {e=\object{\overline{\method{m}{\*x_p:\tau_p*}{\tau_s}{e_b}}},\xs=x}
+        By Rule~\ref{eq:type-req},
+        $\overline{\ctx{\G,\*x_p:\tau_p*}{e_b}{\tau_b}}$ where
+        $\tau_b\sub\tau_s$. $x\notin\*x_p*$, so by induction $\*[\O/x]e_b\bto
+        e_b\′*$ with $\*\ctx{\G,\*x_p:\tau_p*}{e_b\′}{\tau_b\′}*$ where
+        $\*\tau_b\′\sub\tau_b*$.  As $\*\tau_b\′\sub\tau_b*$ and
+        $\*\tau_b\sub\tau_s*$, by Lemma~\ref{lem:sub-transitive},
+        $\*\tau_b\′\sub\tau_s*$. As the types of the methods have not changed,
+        $\gctx{\object{\overline{\method{m}{\*x_p:\tau_p*}{\tau_s}{e_b\′}}}}
+        {\tau}$, and by Lemma~\ref{lem:sub-reflexive}, $\tau\sub\tau$.
 
         \case{\ref{eq:sub-self}}{e = \object{\*\M_i*}, \xs= \self}
-        $[e^\prime/\self]\object{\*\M_i*} \bto \object{\*\M_i*}$ and
-        $\gctx{\object{\*\M_i*}}{\tau}$, so $\tau^\prime = \tau$.  By
-        Lemma~\ref{lem:sub-reflexive}, $\tau^\prime \sub \tau$.
+        $[\O/\self]\object{\*\M*}\bto\object{\*\M*}$ and
+        $\gctx{\object{\*\M*}}{\tau}$. By Lemma~\ref{lem:sub-reflexive},
+        $\tau\sub\tau$.
       \end{match}
     \end{proof}
   \end{lemma}
 
   \begin{proof}
-    By induction on a derivation of $e \sto e^\prime$.  The inductive steps for
+    By induction on a derivation of $e\sto e\′$. The inductive steps for
     \textsc{R-Rec} and \textsc{R-Arg} are trivial, so only \textsc{R-Req}
     remains.
 %
     \begin{align*}
-      &e = \object{\*\M_i*}.m(\*\O_i*) &
-      \method{m}{\*x_i : \upsilon_i*}{\tau}{e_m} \in \*\M_i* \\
-      &e^\prime = [\*\O_i/x_i*, \object{\*\M_i*}/\self]e_m &
+      &e=\object{\*\M*}.m(\*\O_a*)
+      &\method{m}{\*x_p:\tau_p*}{\tau}{e_b}\in\*\M*\\
+      &e\′=[\*\O_a/x_p*,\object{\*\M*}/\self]e_b&
     \end{align*}
 
     \noindent By Rules~\ref{eq:type-req} and~\ref{eq:type-obj}, for some types
-    $\*\upsilon^\prime_i*$ we have:
-%
-    \begin{displaymath}
-      \G \vdash \object{\*\methh{\H_j}{e_j}*} : \type{\*\H_j*} \quad\quad
-      m(\*x_i : \upsilon_i*) \to \sigma \in \*\H_j* \quad\quad
-      \G \vdash \*\O_i : \upsilon^\prime_i* \quad\quad
-      \*\upsilon^\prime_i \sub \upsilon_i*
-    \end{displaymath}
-
-    \noindent By Rule~\ref{eq:type-meth}, $\ctx{\G,\*x_i :
-    \upsilon_i*}{e_m}{\sigma}$ where $\sigma \sub \tau$. By
-    Lemma~\ref{lem:preservation}, $\G \vdash [\*\O_i/x_i,\O/\self*]e_m :
-    \sigma^\prime$ where $\sigma^\prime \sub \sigma$.  As $\sigma^\prime =
-    \tau^\prime$, by Lemma~\ref{lem:sub-transitive}, $\tau^\prime \sub \sigma$.
+    $\*\tau_a*$ we have $\G\vdash\*\O_a:\tau_a*$ and $\*\tau_a\sub\tau_p*$. By
+    Rule~\ref{eq:type-meth}, $\ctx{\G,\*x_p:\tau_p*}{e_b}{\tau_b}$ where
+    $\tau_b\sub\tau$. By Lemma~\ref{lem:preservation}, $\gctx{e\′}{\tau_b\′}$
+    where $\tau_b\′\sub\tau$, and so by Lemma~\ref{lem:sub-transitive},
+    $\tau_b\′\sub\tau$.
   \end{proof}
-
 \end{theorem}
 
 \begin{theorem}[Type Soundness]\label{th:type-soundness}
-  If $\gctx{e}{\tau}$ and $e \stot e^\prime$ with $e^\prime$ in normal form
-  (there is no $e^{\prime\prime}$ such that $e^\prime \sto e^{\prime\prime}$),
-  then $e^\prime$ is an object literal $\O$ with $\gctx{\O}{\tau^\prime}$ where
-  $\tau^\prime \sub \tau$.
+  If $\gctx{e}{\tau}$ and $e\stot e\′$ with $e\′$ in normal form
+  (there is no $e^{\prime\prime}$ such that $e\′\sto e^{\prime\prime}$),
+  then $e\′$ is an object literal $\O$ with $\gctx{\O}{\tau\′}$ where
+  $\tau\′\sub\tau$.
 
   \begin{proof}
     Immediate from Theorems~\ref{th:progress} and~\ref{th:preservation}.
   \end{proof}
 \end{theorem}
 
-\noindent This proves that for a Tiny Grace program $(\*\M*, e)$, if
+\noindent This proves that for any Tiny Grace program $(\*\M*, e)$, if
 $\pjdg{\*\M*}{e}$, then the program will always successfully run to the
-production of an appropriate object literal.
+production of an appropriate object literal or continue indefinitely.
 

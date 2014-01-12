@@ -2,7 +2,7 @@
 
 A Tiny Grace program is a pair containing an object body and an expression which
 will be evaluated in the scope of the body. Unlike standard Grace, parentheses
-and type information is always required.  As there is no type aliasing, type
+and type information is always required. As there is no type aliasing, type
 information is always a type literal, so the current language is fairly verbose.
 Tiny Grace programs are usually valid Grace programs, with the exception that
 variables may shadow method names.
@@ -19,12 +19,12 @@ method wrap(x : {}) -> { value() -> {} } {
 \end{lstlisting}
 
 \noindent Due to subtyping, any object may be passed to this method as
-\lstinline{x}, as all objects satisfy the empty type.  Any static knowledge of
+\lstinline{x}, as all objects satisfy the empty type. Any static knowledge of
 the methods in \lstinline{x} is lost, and cannot be recovered, so no methods can
 ever be requested on the result of the \lstinline{value} method.
 
 The \lstinline{wrap} method is a valid object body by itself, and we can now
-evaluate an expression in the scope of this body.  Method requests cannot be
+evaluate an expression in the scope of this body. Method requests cannot be
 unqualified, and so the method must be requested as \lstinline{self.wrap}.
 
 \begin{lstlisting}
@@ -34,24 +34,24 @@ self.wrap(object {
 \end{lstlisting}
 
 \noindent The outcome of requesting \lstinline{value} on this expression will be
-the object passed to \lstinline{wrap}.  As mentioned above, the type checker
-will not allow a request for the method \lstinline{id} on the result.
+the object passed to \lstinline{wrap}. As mentioned above, the type checker will
+not allow a request for the method \lstinline{id} on the result.
 
 \subsection{Syntax}\label{sec:syntax}
 
 The abstract syntax for Tiny Grace is defined in
-Figure~\ref{fig:abstract-syntax}.  The metavariable $\M$ ranges over methods;
+Figure~\ref{fig:abstract-syntax}. The metavariable $\M$ ranges over methods;
 $\O$ over object literals; $x$ and $y$ over variable names; $\xs$ over both
 variable names and the {\sffamily\bfseries self} keyword; $\tau$, $\sigma$ and
 $\upsilon$ over types; $\H$ over method headers, $m$ over method names, and $e$
-over expressions.  We write $\*e*$ to indicate a possibly empty sequence of
+over expressions. We write $\*e*$ to indicate a possibly empty sequence of
 comma-separated expressions $e_1, \dots, e_n$, as well as for method header
-parameters $\*x : \tau*$.  We also write $\*\H*$ and $\*\M*$ to indicate a
+parameters $\*x : \tau*$. We also write $\*\H*$ and $\*\M*$ to indicate a
 possibly empty set of method headers with unique names $\H_1 \dots \H_n$ and
 $\M_1 \dots \M_n$ respectively.
 
-As an object body is just a sequence of methods, a Tiny Grace program is
-any pair of the form $(\*\M*, e)$.
+As an object body is just a sequence of methods, a Tiny Grace program is any
+pair of the form $(\*\M*, e)$.
 
 \begin{figure}[h]
   \centering

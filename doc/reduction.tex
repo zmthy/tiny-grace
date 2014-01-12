@@ -10,7 +10,7 @@ object literal $\O$.
 
 The substitution used in Tiny Grace reduction is non-trivially different from
 standard substitution, so it is redefined in Figure~\ref{fig:substitution}.
-Substitution in Tiny Grace is written $[\O/\xs]e$.  The important distinction is
+Substitution in Tiny Grace is written $[\O/\xs]e$. The important distinction is
 Rule~\ref{eq:sub-self}, which prevents $\self$ from changing for inner objects.
 
 \begin{figure}[h]
@@ -20,35 +20,35 @@ Rule~\ref{eq:sub-self}, which prevents $\self$ from changing for inner objects.
 
   \begin{equation}
     \name{Var}\label{eq:sub-var}
-    \AxiomC{$[\O/\xs]\xs \bto \O$}
+    \AxiomC{$[\O/\xs]\xs\bto\O$}
     \DisplayProof
   \end{equation}
 %
   \begin{equation}
     \name{None}\label{eq:sub-none}
-    \AxiomC{$[\O/\xs]y \bto y \quad \mathbf{if}~\xs \neq y$}
+    \AxiomC{$[\O/\xs]y\bto y\quad\mathbf{if}~\xs\neq y$}
     \DisplayProof
   \end{equation}
   \vspace{-.8em}
   \begin{equation}
     \name{Self}\label{eq:sub-self}
-    \AxiomC{$[\O/\self]\object{\*\M_i*} \bto \object{\*\M_i*}$}
+    \AxiomC{$[\O/\self]\object{\*\M*}\bto\object{\*\M*}$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \name{Obj}\label{eq:sub-obj}
-    \AxiomC{$\*[\O/x]e_i \bto e_i^\prime*$}
-    \UnaryInfC{$[O/x]\object{\*\methh{\H_i}{e_i}*} \bto
-      \object{\*\methh{\H_i}{e_i^\prime}*}$}
+    \AxiomC{$\*[\O/x]e\bto e\′*$}
+    \UnaryInfC{$[O/x]\object{\*\methh{\H}{e}*} \bto
+      \object{\*\methh{\H}{e\′}*}$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \name{Req}\label{eq:sub-req}
-    \AxiomC{$[\O/\xs]e \bto e^\prime$}
-    \AxiomC{$\*[\O/\xs]e_i \bto e_i^\prime*$}
-    \BinaryInfC{$[\O/\xs]e.m(\*e_i*) \bto e^\prime.m(\*e_i^\prime*)$}
+    \AxiomC{$[\O/\xs]e\bto e\′$}
+    \AxiomC{$\*[\O/\xs]e_a\bto e_a\′*$}
+    \BinaryInfC{$[\O/\xs]e.m(\*e_a*)\bto e\′.m(\*e_a\′*)$}
     \DisplayProof
   \end{equation}
 
@@ -58,33 +58,33 @@ Rule~\ref{eq:sub-self}, which prevents $\self$ from changing for inner objects.
 \subsection{Reduction Semantics}\label{sec:reduction-semantics}
 
 The rules for the reduction relation $\sto$ are given in
-Figure~\ref{fig:reduction}.  The relation is written $e \sto e^\prime$, meaning
-that the expression $e$ reduces to $e^\prime$ in a single small-step reduction
-step.  We write $\stot$ for the reflexive transitive closure of $\sto$.  The
-reduction $e \stot \O$ is the big-step form of the reduction semantics.
+Figure~\ref{fig:reduction}. The relation is written $e \sto e\′$, meaning that
+the expression $e$ reduces to $e\′$ in a single small-step reduction step. We
+write $\stot$ for the reflexive transitive closure of $\sto$. The reduction $e
+\stot \O$ is the big-step form of the reduction semantics.
 
 \begin{figure}[h]
   \centering
 
   \begin{equation}
     \tag{\textsc{R-Rec}}\label{eq:red-rec}
-    \AxiomC{$e \sto e^\prime$}
-    \UnaryInfC{$e.m(\*e_i*) \sto e^\prime.m(\*e_i*)$}
+    \AxiomC{$e\sto e\′$}
+    \UnaryInfC{$e.m(\*e_a*)\sto e\′.m(\*e_a*)$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \tag{\textsc{R-Arg}}\label{eq:red-arg}
-    \AxiomC{$e_i \sto e_i^\prime$}
-    \UnaryInfC{$\O.m(\*\O_i*, e_i, \*e_i*) \sto
-      \O.m(\*\O_i*, e_i^\prime, \*e_i*)$}
+    \AxiomC{$e\sto e\′$}
+    \UnaryInfC{$\O.m(\*\O*, e, \*e_a*) \sto
+      \O.m(\*\O*, e\′, \*e_a*)$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \tag{\textsc{R-Req}}\label{eq:red-req}
-    \AxiomC{$\method{m}{\*x_i : \upsilon_i*}{\sigma}{e} \in \*\M*$}
-    \UnaryInfC{$\object{\*\M*}.m(\*\O_i*) \sto [\*\O_i/x_i*,\ \object{\*\M*}/\self]e$}
+    \AxiomC{$\method{m}{\*x:\tau_p*}{\tau}{e}\in\*\M*$}
+    \UnaryInfC{$\object{\*\M*}.m(\*\O*)\sto[\*\O/x*,\object{\*\M*}/\self]e$}
     \DisplayProof
   \end{equation}
 
@@ -137,7 +137,7 @@ object{
 }.wrap(object { method id(y : {}) -> {} { y } })
   \end{lstlisting}
 
-  \noindent Now a step of reduction takes place.  The top-level expression is a
+  \noindent Now a step of reduction takes place. The top-level expression is a
   request, so we apply Rule~\ref{eq:red-req}, replacing the request with a
   substitution over the appropriate method's body.
 

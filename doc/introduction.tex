@@ -1,8 +1,7 @@
 \section{Introduction}\label{sec:introduction}
 
 Tiny Grace is a tiny subset of the Grace programming language, in the spirit of
-Featherweight Java \cite{fj}.  It currently aims to resolve the following
-issues:
+Featherweight Java \cite{fj}. It currently aims to resolve the following issues:
 
 \begin{itemize}
 
@@ -50,11 +49,11 @@ issues:
 
 \noindent The current version of Tiny Grace is much simpler than Featherweight
 Java in most aspects, as it does not feature constructors, fields, or casts, and
-does not need to maintain a class table.  Instead of these features, it must
-implement scope, as objects can be nested.  This requires a more complicated
+does not need to maintain a class table. Instead of these features, it must
+implement scope, as objects can be nested. This requires a more complicated
 substitution algorithm which can substitute both variables and \self, but with
-only variables crossing object boundaries.  As the language does not feature
+only variables crossing object boundaries. As the language does not feature
 casting, type soundness guarantees program completion, whereas FJ may halt on
-invalid casts.  Tiny Grace is strictly less powerful than FJ, as lost type
+invalid casts. Tiny Grace is strictly less powerful than FJ, as lost type
 information cannot be recovered, and recursive types cannot be expressed.
 

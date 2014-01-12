@@ -1,47 +1,43 @@
 \section{Typing}\label{sec:typing}
 
-A Tiny Grace program $(\*\methh{\H_i}{e_i}*, e)$ is well-formed if we can
-produce a type $\tau$ for $e$ in the context of its object body.  This can be
-expressed with the typing rules in Section~\ref{sec:typing-rules} as:
+A Tiny Grace program $(\*\methh{\H}{e_b}*, e)$ is well-formed if we can produce
+a type $\tau$ for $e$ in the context of its object body. This can be expressed
+with the typing rules in Section~\ref{sec:typing-rules} as:
 
 \begin{equation}
   \tag{\textsc{T-Prg}}\label{eq:type-prg}
-  \AxiomC{$\ctx{\varnothing}{\object{\*\methh{\H_i}{e_i}*}}{\type{\*\H_i*}}$}
-  \AxiomC{$\ctx{\self : \type{\*\H_i*}}{e}{\tau}$}
-  \BinaryInfC{$\pjdg{\*\methh{\H_i}{e_i}*}{e}$}
+  \AxiomC{$\ctx{\varnothing}{\object{\*\methh{\H}{e_b}*}}{\type{\*\H*}}$}
+  \AxiomC{$\ctx{\self : \type{\*\H*}}{e}{\tau}$}
+  \BinaryInfC{$\pjdg{\*\methh{\H}{e_b}*}{e}$}
   \DisplayProof
 \end{equation}
 
 \subsection{Subtyping}\label{sec:subtyping}
 
-The rules for subtyping are given in Figure~\ref{fig:subtyping}.  The relation
-is written $\Sigma \vdash \tau \sub \tau^\prime$, meaning a type $\tau$ is a
-subtype of type $\tau^\prime$ in a constraint set $\Sigma$ if, for every method
-in $\tau^\prime$, there is a method with the same name in $\tau$ with
-contravariant parameter types and a covariant return type. Subtyping with an
-empty assumption set is abbreviated $\tau \sub \tau^\prime$. Constraints may be
-added to the constraint set with $\Sigma, \tau \sub \tau^\prime$, which implies
-the constraint is not already in the set.
+The rules for subtyping are given in Figure~\ref{fig:subtyping}. The relation is
+written $\ssjdg\tau{\tau\′}$, meaning a type $\tau$ is a subtype of type
+$\tau\′$ in a constraint set $\Sigma$ if, for every method in $\tau\′$, there is
+a method with the same name in $\tau$ with contravariant parameter types and a
+covariant return type. Subtyping with an empty assumption set is abbreviated
+$\tau\sub\tau\′$. Constraints may be added to the constraint set with
+$\Sigma,\tau\sub\tau\′$, which implies the constraint is not already in the set.
 
 \begin{figure}[h]
   \centering
 
-  \def\rule{\type{\*\H_j*} \sub
-    \mset{m_i}{x_{ik}^\prime}{\upsilon_{ik}^\prime}{\sigma_i^\prime}}
-
   \begin{equation}
     \tag{\textsc{T-Assum}}\label{eq:type-assum}
-    \AxiomC{$\tau^\prime \sub \tau \in \Sigma$}
-    \UnaryInfC{$\Sigma \vdash \tau^\prime \sub \tau$}
+    \AxiomC{$\tau\sub\tau\′\in\Sigma$}
+    \UnaryInfC{$\ssjdg{\tau}{\tau\′}$}
     \DisplayProof
   \end{equation}
 %
   \begin{equation}
     \tag{\textsc{T-Sub}}\label{eq:type-sub}
-    \AxiomC{$\mh{m_i}{x_{ik}}{\upsilon_{ik}}{\sigma_i} \in \*\H_j*$}
-    \AxiomC{$\Sigma, \rule \vdash \*\upsilon_{ik}^\prime \sub \upsilon_{ik}*,
-      \*\sigma_i \sub \sigma_i^\prime*$}
-    \BinaryInfC{$\Sigma \vdash \rule$}
+    \AxiomC{$\mh{m}{x}{\tau_p}{\tau}\subseteq\*\H*$}
+    \AxiomC{$\*\tau_p\′\sub\tau_p*,\*\tau\sub\tau\′*\mid
+      \Sigma,\type{\*\H*}\sub\mset{m}{x\′}{\tau_p\′}{\tau\′}$}
+    \BinaryInfC{$\ssjdg{\type{\*\H*}}{\mset{m}{x\′}{\tau_p\′}{\tau\′}}$}
     \DisplayProof
   \end{equation}
 
@@ -51,14 +47,14 @@ the constraint is not already in the set.
 \subsection{Typing Rules}\label{sec:typing-rules}
 
 The typing rules for expressions and method declarations is given in
-Figure~\ref{fig:typing}.  An environment $\G$ is a finite mapping from variable
-names to types, written $\*\xs_i : \tau_i*$.  The empty environment is written
-$\varnothing$.  Environments can be concatenated together, typically written
+Figure~\ref{fig:typing}. An environment $\G$ is a finite mapping from variable
+names to types, written $\*\xs_i : \tau_i*$. The empty environment is written
+$\varnothing$. Environments can be concatenated together, typically written
 $\G,\*\xs_i : \tau_i*$, with variables that exist in both environments bound to
-the mapping in the latter environment.  The typing judgement for expressions has
+the mapping in the latter environment. The typing judgement for expressions has
 the form $\gctx{e}{\tau}$, meaning that in the environment $\G$, $e$ has the
-type $\tau$.  The typing judgement for methods has the form $\gmctx{\M}$,
-meaning that in the environment $\G$, the method $\M$ is well-formed. The typing
+type $\tau$. The typing judgement for methods has the form $\gmctx{\M}$, meaning
+that in the environment $\G$, the method $\M$ is well-formed. The typing
 judgement for programs has the form $\pjdg{\*\M*}{e}$, meaning that the program
 $(\*\M*, e)$ is well-formed.
 
@@ -69,35 +65,36 @@ $(\*\M*, e)$ is well-formed.
 
   \begin{equation}
     \name{Var}\label{eq:type-var}
-    \AxiomC{$\gctx{\xs}{\G(\xs)}$}
+    \AxiomC{$\xs:\tau\in\G$}
+    \UnaryInfC{$\gctx{\xs}{\tau}$}
     \DisplayProof
   \end{equation}
 %
   \begin{equation}
     \name{Req}\label{eq:type-req}
-    \AxiomC{$\gctx{e}{\type{\*\H_i*}}$}
-    \AxiomC{$m(\*x_i : \upsilon_i*) \to \sigma \in \*\H_i*$}
-    \AxiomC{$\gctx{\*e_i}{\upsilon^\prime_i}*$}
-    \AxiomC{$\*\upsilon^\prime_i \sub \upsilon_i*$}
-    \QuaternaryInfC{$\gctx{e.m(\*e_i*)}{\sigma}$}
+    \AxiomC{$\gctx{e}{\type{\*\H*}}$}
+    \AxiomC{$\meth{m}{x}{\tau_p}{\tau}\in\*\H*$}
+    \AxiomC{$\gctx{\*e_a}{\tau_a}*$}
+    \AxiomC{$\*\tau_a\sub\tau_p*$}
+    \QuaternaryInfC{$\gctx{e.m(\*e_a*)}{\tau}$}
     \DisplayProof
   \end{equation}
 %
   \begin{equation}
     \name{Obj}\label{eq:type-obj}
-    \AxiomC{$\overline{m_i \notin \*\H_i*\setminus\H_i}$}
-    \AxiomC{$\G, \self : \type{\*\H_i*} \vdash
-      \*\methh{\H_i}{e_i}~\checkmark*$}
-    \BinaryInfC{$\gctx{\object{\*\methh{\H_i}{e_i}*}}{\type{\*\H_i*}}$}
+    \AxiomC{$\overline{m_i\notin\*\H*\setminus\H_i}$}
+    \AxiomC{$\G,\self:\type{\*\H*} \vdash
+      \*\methh{\H}{e}~\checkmark*$}
+    \BinaryInfC{$\gctx{\object{\*\methh{\H}{e}*}}{\type{\*\H*}}$}
     \DisplayProof
   \end{equation}
 %
   \begin{equation}
     \name{Meth}\label{eq:type-meth}
-    \AxiomC{$\*x_i \notin \G*$}
-    \AxiomC{$\ctx{\G, \*x_i : \upsilon_i*}{e}{\sigma^\prime}$}
-    \AxiomC{$\sigma^\prime \sub \sigma$}
-    \TrinaryInfC{$\gmctx{\method{m}{\*x_i : \upsilon_i*}{\sigma}{e}}$}
+    \AxiomC{$\*x\notin\G*$}
+    \AxiomC{$\ctx{\G,\*x:\tau_p*}{e}{\tau}$}
+    \AxiomC{$\tau\sub\tau\′$}
+    \TrinaryInfC{$\gmctx{\method{m}{\*x:\tau_p*}{\tau\′}{e}}$}
     \DisplayProof
   \end{equation}
 
@@ -122,7 +119,7 @@ $(\*\M*, e)$ is well-formed.
   \def\e{\self.\mlst{wrap}(\aob)}
 
   Continuing the example from the previous section, we can ensure that the
-  example program is well-formed.  For the sake of space, we define some initial
+  example program is well-formed. For the sake of space, we define some initial
   bindings:
 
   \begin{lstlisting}
