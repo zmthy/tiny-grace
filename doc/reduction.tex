@@ -1,9 +1,9 @@
 \section{Reduction}\label{sec:reduction}
 
-Given a Tiny Grace program $(\*M*, e)$, we can `run' $e$ in the scope of
-$\*M*$ by applying substitution from Section~\ref{sec:substitution} and
+Given a Tiny Grace program $(\ol{M}, e)$, we can `run' $e$ in the scope of
+$\ol{M}$ by applying substitution from Section~\ref{sec:substitution} and
 big-step reduction from Section~\ref{sec:reduction-semantics} to
-$[\object{\*M*}/\self]e \stot O$, producing an outcome in the form of the
+$[\object{\ol{M}}/\self]e \stot O$, producing an outcome in the form of the
 object literal $O$.
 
 \subsection{Substitution}\label{sec:substitution}
@@ -32,23 +32,23 @@ Rule~\ref{eq:sub-self}, which prevents $\self$ from changing for inner objects.
   \vspace{-.8em}
   \begin{equation}
     \name{Self}\label{eq:sub-self}
-    \AxiomC{$[O/\self]\object{\*M*}\bto\object{\*M*}$}
+    \AxiomC{$[O/\self]\object{\ol{M}}\bto\object{\ol{M}}$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \name{Obj}\label{eq:sub-obj}
-    \AxiomC{$\*[O/x]e\bto e\′*$}
-    \UnaryInfC{$[O/x]\object{\*\methh{H}{e}*} \bto
-      \object{\*\methh{H}{e\′}*}$}
+    \AxiomC{$\ol{[O/x]e\bto e\′}$}
+    \UnaryInfC{$[O/x]\object{\ol{\methh{H}{e}}} \bto
+      \object{\ol{\methh{H}{e\′}}}$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \name{Req}\label{eq:sub-req}
     \AxiomC{$[O/\xs]e\bto e\′$}
-    \AxiomC{$\*[O/\xs]e_a\bto e_a\′*$}
-    \BinaryInfC{$[O/\xs]e.m(\*e_a*)\bto e\′.m(\*e_a\′*)$}
+    \AxiomC{$\ol{[O/\xs]e_a\bto e_a\′}$}
+    \BinaryInfC{$[O/\xs]e.m(\ol{e_a})\bto e\′.m(\ol{e_a\′})$}
     \DisplayProof
   \end{equation}
 
@@ -69,22 +69,22 @@ write $\stot$ for the reflexive transitive closure of $\sto$. The reduction $e
   \begin{equation}
     \tag{\textsc{R-Rec}}\label{eq:red-rec}
     \AxiomC{$e\sto e\′$}
-    \UnaryInfC{$e.m(\*e_a*)\sto e\′.m(\*e_a*)$}
+    \UnaryInfC{$e.m(\ol{e_a})\sto e\′.m(\ol{e_a})$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \tag{\textsc{R-Arg}}\label{eq:red-arg}
     \AxiomC{$e\sto e\′$}
-    \UnaryInfC{$O.m(\*O*, e, \*e_a*) \sto
-      O.m(\*O*, e\′, \*e_a*)$}
+    \UnaryInfC{$O.m(\ol{O}, e, \ol{e_a}) \sto
+      O.m(\ol{O}, e\′, \ol{e_a})$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \tag{\textsc{R-Req}}\label{eq:red-req}
-    \AxiomC{$\method{m}{\*x:\tau_p*}{\tau}{e}\in\*M*$}
-    \UnaryInfC{$\object{\*M*}.m(\*O*)\sto[\*O/x*,\object{\*M*}/\self]e$}
+    \AxiomC{$\method{m}{\ol{x:\tau_p}}{\tau}{e}\in\ol{M}$}
+    \UnaryInfC{$\object{\ol{M}}.m(\ol{O})\sto[\ol{O/x},\object{\ol{M}}/\self]e$}
     \DisplayProof
   \end{equation}
 

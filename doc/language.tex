@@ -44,14 +44,14 @@ Figure~\ref{fig:abstract-syntax}. The metavariable $M$ ranges over methods;
 $O$ over object literals; $x$ and $y$ over variable names; $\xs$ over both
 variable names and the {\sffamily\bfseries self} keyword; $\tau$, $\sigma$ and
 $\upsilon$ over types; $H$ over method headers, $m$ over method names, and $e$
-over expressions. We write $\*e*$ to indicate a possibly empty sequence of
+over expressions. We write $\ol{e}$ to indicate a possibly empty sequence of
 comma-separated expressions $e_1, \dots, e_n$, as well as for method header
-parameters $\*x : \tau*$. We also write $\*H*$ and $\*M*$ to indicate a
+parameters $\ol{x : \tau}$. We also write $\ol{H}$ and $\ol{M}$ to indicate a
 possibly empty set of method headers with unique names $H_1 \dots H_n$ and
 $M_1 \dots M_n$ respectively.
 
 As an object body is just a sequence of methods, a Tiny Grace program is any
-pair of the form $(\*M*, e)$.
+pair of the form $(\ol{M}, e)$.
 
 \begin{figure}[h]
   \centering
@@ -69,13 +69,13 @@ pair of the form $(\*M*, e)$.
     \begin{grammar}
       <M> ::= "method" $H$ \bo~$e$ \bc
 
-      <O> ::= "object" \bo~$\*M*$ \bc
+      <O> ::= "object" \bo~$\ol{M}$ \bc
 
-      <H> ::= <m>`('$\*x : \tau*$`)' $\to$ $\tau$
+      <H> ::= <m>`('$\ol{x : \tau}$`)' $\to$ $\tau$
 
-      <\tau> ::= "type" \bo~$\*H*$ \bc
+      <\tau> ::= "type" \bo~$\ol{H}$ \bc
 
-      <e> ::= <x> | "self" | <e>`.'<m>($\*e*$) | $O$
+      <e> ::= <x> | "self" | <e>`.'<m>($\ol{e}$) | $O$
     \end{grammar}
   \end{minipage}
 

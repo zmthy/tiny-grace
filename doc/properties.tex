@@ -1,7 +1,7 @@
 \section{Properties}
 
 \begin{theorem}[Progress]\label{th:progress}
-  Given a well-formed program $(\*M*,e)$, any expression $e\′$ in the
+  Given a well-formed program $(\ol{M},e)$, any expression $e\′$ in the
   relation $e\stot e\′$ is either an object literal $O$ or can be reduced
   by an application of $\sto$.
 
@@ -18,9 +18,9 @@
 
   \begin{proof}
     A well-typed program has no free variables, so $\xs$ is never encountered in
-    reduction. Inductive steps for method requests $e.m(\*e_a*)$ and
-    $O.m(\*e_a*)$ are trivial, so we need only show that a method request
-    $O.m(\*O_a*)$ can always proceed and will always complete.
+    reduction. Inductive steps for method requests $e.m(\ol{e_a})$ and
+    $O.m(\ol{e_a})$ are trivial, so we need only show that a method request
+    $O.m(\ol{O_a})$ can always proceed and will always complete.
     Rule~\ref{eq:type-obj} guarantees that the requested method always exists in
     the receiver, which is the only requirement for $\sto$ to be applied to this
     form of method request. The relation is satisfied as long as the
@@ -40,7 +40,7 @@
     \begin{proof}
       By induction on Rule~\ref{eq:type-sub}. $\type{}\sub\type{}$ is a
       derived axiom. For every method $\meth{m}{x}{\tau_p}{\tau_r}$ in $\tau$,
-      if $\cjdg{\*\tau_p\sub\tau_p*,\*\tau_r\sub\tau_r*}{\tau\sub\tau}$, then
+      if $\cjdg{\ol{\tau_p\sub\tau_p},\ol{\tau_r\sub\tau_r}}{\tau\sub\tau}$, then
       $\tau\sub\tau$. As types cannot be infinite in size, this inductive
       application is guaranteed to complete at every branch on $\tau=\type{}$.
     \end{proof}
@@ -61,10 +61,10 @@
       By induction on Rule~\ref{eq:type-sub}. For every type $\tau$,
       $\tau\sub\type{}$ is a derived axiom. For every method
       $\meth{m}{\xc}{\tc_p}{\tc_r}$ in $\tc$, there exists a method
-      $\meth{m}{\xb}{\tb_p}{\tb_r}$ in $\tb$ where $\*\tc_p\sub\tb_p*$ and
+      $\meth{m}{\xb}{\tb_p}{\tb_r}$ in $\tb$ where $\ol{\tc_p\sub\tb_p}$ and
       $\tb_r\sub\tc_r$, and therefore a method $\meth{m}{\xa}{\ta_p}{\ta_r}$
-      where $\*\tb_p\sub\ta_p*$ and $\ta_r\sub\tb_r$, so if
-      $\*\tc_p\sub\tc_p*$ and $\ta_r\sub\tc_r$ then $\ta\sub\tc$. As types
+      where $\ol{\tb_p\sub\ta_p}$ and $\ta_r\sub\tb_r$, so if
+      $\ol{\tc_p\sub\tc_p}$ and $\ta_r\sub\tc_r$ then $\ta\sub\tc$. As types
       cannot be infinite in size, this inductive application is guaranteed to
       complete at every branch on $\tc = \type{}$.
     \end{proof}
@@ -88,35 +88,35 @@
         $[O/\xs]y\bto y$ and $\gctx{y}{\tau}$. By
         Lemma~\ref{lem:sub-reflexive}, $\tau\sub\tau$.
 
-        \case{\ref{eq:sub-req}}{e=e_r.m (\*e_a*)}
-        $\G\vdash e_r:\tau_r,\*e_a:\tau_a*$. By induction, $[O/\xs]e_r\bto
-        e_r\′$ and $\*[O/\xs]e_a\bto e_a\′*$ with $\G,\xs:\tau_x\vdash
-        e_r\′:\tau_r\′,\*e\′_a:\tau_a\′*$ where $\tau_r\′\sub\tau_r$ and
-        $\*\tau_a\′\sub\tau_a*$. By Rule~\ref{eq:type-req}, there exists a
-        method with head $m(\*x_p:\tau_p*)\to\tau$ in $\tau_r$ where
-        $\*\tau_a\sub\tau_p*$. As $\tau_r\′\sub\tau_r$, by
+        \case{\ref{eq:sub-req}}{e=e_r.m (\ol{e_a})}
+        $\G\vdash e_r:\tau_r,\ol{e_a:\tau_a}$. By induction, $[O/\xs]e_r\bto
+        e_r\′$ and $\ol{[O/\xs]e_a\bto e_a\′}$ with $\G,\xs:\tau_x\vdash
+        e_r\′:\tau_r\′,\ol{e\′_a:\tau_a\′}$ where $\tau_r\′\sub\tau_r$ and
+        $\ol{\tau_a\′\sub\tau_a}$. By Rule~\ref{eq:type-req}, there exists a
+        method with head $m(\ol{x_p:\tau_p})\to\tau$ in $\tau_r$ where
+        $\ol{\tau_a\sub\tau_p}$. As $\tau_r\′\sub\tau_r$, by
         Rule~\ref{eq:type-sub} and there exists a method with head
-        $m(\*x_p\′:\tau_p\′*)\to\tau\′$ in $\tau_r\′$ where
-        $\*\tau_p\sub\tau_p\′*$ and $\tau\′\sub\tau$. $\*\tau_a\sub\tau_p*$ and
-        $\*\tau_p\sub\tau_p\′*$, so by Lemma~\ref{lem:sub-transitive},
-        $\*\tau_a\sub\tau_p\′*$. Then by Rule~\ref{eq:type-req},
+        $m(\ol{x_p\′:\tau_p\′})\to\tau\′$ in $\tau_r\′$ where
+        $\ol{\tau_p\sub\tau_p\′}$ and $\tau\′\sub\tau$. $\ol{\tau_a\sub\tau_p}$ and
+        $\ol{\tau_p\sub\tau_p\′}$, so by Lemma~\ref{lem:sub-transitive},
+        $\ol{\tau_a\sub\tau_p\′}$. Then by Rule~\ref{eq:type-req},
         $\gctx{e_r\′.m(e_a\′)}{\tau\′}$.
 
         \case{\ref{eq:sub-obj}}
-          {e=\object{\overline{\method{m}{\*x_p:\tau_p*}{\tau_s}{e_b}}},\xs=x}
+          {e=\object{\overline{\method{m}{\ol{x_p:\tau_p}}{\tau_s}{e_b}}},\xs=x}
         By Rule~\ref{eq:type-req},
-        $\overline{\ctx{\G,\*x_p:\tau_p*}{e_b}{\tau_b}}$ where
-        $\tau_b\sub\tau_s$. $x\notin\*x_p*$, so by induction $\*[O/x]e_b\bto
-        e_b\′*$ with $\*\ctx{\G,\*x_p:\tau_p*}{e_b\′}{\tau_b\′}*$ where
-        $\*\tau_b\′\sub\tau_b*$.  As $\*\tau_b\′\sub\tau_b*$ and
-        $\*\tau_b\sub\tau_s*$, by Lemma~\ref{lem:sub-transitive},
-        $\*\tau_b\′\sub\tau_s*$. As the types of the methods have not changed,
-        $\gctx{\object{\overline{\method{m}{\*x_p:\tau_p*}{\tau_s}{e_b\′}}}}
+        $\overline{\ctx{\G,\ol{x_p:\tau_p}}{e_b}{\tau_b}}$ where
+        $\tau_b\sub\tau_s$. $x\notin\ol{x_p}$, so by induction $\*[O/x]e_b\bto
+        e_b\′*$ with $\ol{\ctx{\G,\ol{x_p:\tau_p}}{e_b\′}{\tau_b\′}}$ where
+        $\ol{\tau_b\′\sub\tau_b}$.  As $\ol{\tau_b\′\sub\tau_b}$ and
+        $\ol{\tau_b\sub\tau_s}$, by Lemma~\ref{lem:sub-transitive},
+        $\ol{\tau_b\′\sub\tau_s}$. As the types of the methods have not changed,
+        $\gctx{\object{\overline{\method{m}{\ol{x_p:\tau_p}}{\tau_s}{e_b\′}}}}
         {\tau}$, and by Lemma~\ref{lem:sub-reflexive}, $\tau\sub\tau$.
 
-        \case{\ref{eq:sub-self}}{e = \object{\*M_i*}, \xs= \self}
-        $[O/\self]\object{\*M*}\bto\object{\*M*}$ and
-        $\gctx{\object{\*M*}}{\tau}$. By Lemma~\ref{lem:sub-reflexive},
+        \case{\ref{eq:sub-self}}{e = \object{\ol{M_i}}, \xs= \self}
+        $[O/\self]\object{\ol{M}}\bto\object{\ol{M}}$ and
+        $\gctx{\object{\ol{M}}}{\tau}$. By Lemma~\ref{lem:sub-reflexive},
         $\tau\sub\tau$.
       \end{match}
     \end{proof}
@@ -128,14 +128,14 @@
     remains.
 %
     \begin{align*}
-      &e=\object{\*M*}.m(\*O_a*)
-      &\method{m}{\*x_p:\tau_p*}{\tau}{e_b}\in\*M*\\
-      &e\′=[\*O_a/x_p*,\object{\*M*}/\self]e_b&
+      &e=\object{\ol{M}}.m(\ol{O_a})
+      &\method{m}{\ol{x_p:\tau_p}}{\tau}{e_b}\in\ol{M}\\
+      &e\′=[\ol{O_a/x_p},\object{\ol{M}}/\self]e_b&
     \end{align*}
 
     \noindent By Rules~\ref{eq:type-req} and~\ref{eq:type-obj}, for some types
-    $\*\tau_a*$ we have $\G\vdash\*O_a:\tau_a*$ and $\*\tau_a\sub\tau_p*$. By
-    Rule~\ref{eq:type-meth}, $\ctx{\G,\*x_p:\tau_p*}{e_b}{\tau_b}$ where
+    $\ol{\tau_a}$ we have $\G\vdash\ol{O_a:\tau_a}$ and $\ol{\tau_a\sub\tau_p}$. By
+    Rule~\ref{eq:type-meth}, $\ctx{\G,\ol{x_p:\tau_p}}{e_b}{\tau_b}$ where
     $\tau_b\sub\tau$. By Lemma~\ref{lem:preservation}, $\gctx{e\′}{\tau_b\′}$
     where $\tau_b\′\sub\tau$, and so by Lemma~\ref{lem:sub-transitive},
     $\tau_b\′\sub\tau$.
@@ -153,7 +153,7 @@
   \end{proof}
 \end{theorem}
 
-\noindent This proves that for any Tiny Grace program $(\*M*, e)$, if
-$\pjdg{\*M*}{e}$, then the program will always successfully run to the
+\noindent This proves that for any Tiny Grace program $(\ol{M}, e)$, if
+$\pjdg{\ol{M}}{e}$, then the program will always successfully run to the
 production of an appropriate object literal or continue indefinitely.
 
