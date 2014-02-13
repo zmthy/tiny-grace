@@ -1,0 +1,4 @@
+A formalism and mechanisation of a subset of the Grace programming language.
+
+/doc - The formalism. Run make to generate tiny-grace.pdf.
+
