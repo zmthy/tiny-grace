@@ -1,14 +1,14 @@
 \section{Typing}\label{sec:typing}
 
-A Tiny Grace program $(\*\methh{\H}{e_b}*, e)$ is well-formed if we can produce
+A Tiny Grace program $(\*\methh{H}{e_b}*, e)$ is well-formed if we can produce
 a type $\tau$ for $e$ in the context of its object body. This can be expressed
 with the typing rules in Section~\ref{sec:typing-rules} as:
 
 \begin{equation}
   \tag{\textsc{T-Prg}}\label{eq:type-prg}
-  \AxiomC{$\ctx{\varnothing}{\object{\*\methh{\H}{e_b}*}}{\type{\*\H*}}$}
-  \AxiomC{$\ctx{\self : \type{\*\H*}}{e}{\tau}$}
-  \BinaryInfC{$\pjdg{\*\methh{\H}{e_b}*}{e}$}
+  \AxiomC{$\ctx{\varnothing}{\object{\*\methh{H}{e_b}*}}{\type{\*H*}}$}
+  \AxiomC{$\ctx{\self : \type{\*H*}}{e}{\tau}$}
+  \BinaryInfC{$\pjdg{\*\methh{H}{e_b}*}{e}$}
   \DisplayProof
 \end{equation}
 
@@ -34,10 +34,10 @@ $\Sigma,\tau\sub\tau\′$, which implies the constraint is not already in the se
 %
   \begin{equation}
     \tag{\textsc{T-Sub}}\label{eq:type-sub}
-    \AxiomC{$\mh{m}{x}{\tau_p}{\tau}\subseteq\*\H*$}
+    \AxiomC{$\mh{m}{x}{\tau_p}{\tau}\subseteq\*H*$}
     \AxiomC{$\*\tau_p\′\sub\tau_p*,\*\tau\sub\tau\′*\mid
-      \Sigma,\type{\*\H*}\sub\mset{m}{x\′}{\tau_p\′}{\tau\′}$}
-    \BinaryInfC{$\ssjdg{\type{\*\H*}}{\mset{m}{x\′}{\tau_p\′}{\tau\′}}$}
+      \Sigma,\type{\*H*}\sub\mset{m}{x\′}{\tau_p\′}{\tau\′}$}
+    \BinaryInfC{$\ssjdg{\type{\*H*}}{\mset{m}{x\′}{\tau_p\′}{\tau\′}}$}
     \DisplayProof
   \end{equation}
 
@@ -53,10 +53,10 @@ $\varnothing$. Environments can be concatenated together, typically written
 $\G,\*\xs_i : \tau_i*$, with variables that exist in both environments bound to
 the mapping in the latter environment. The typing judgement for expressions has
 the form $\gctx{e}{\tau}$, meaning that in the environment $\G$, $e$ has the
-type $\tau$. The typing judgement for methods has the form $\gmctx{\M}$, meaning
-that in the environment $\G$, the method $\M$ is well-formed. The typing
-judgement for programs has the form $\pjdg{\*\M*}{e}$, meaning that the program
-$(\*\M*, e)$ is well-formed.
+type $\tau$. The typing judgement for methods has the form $\gmctx{M}$, meaning
+that in the environment $\G$, the method $M$ is well-formed. The typing
+judgement for programs has the form $\pjdg{\*M*}{e}$, meaning that the program
+$(\*M*, e)$ is well-formed.
 
 \begin{figure}[h]
   \centering
@@ -72,8 +72,8 @@ $(\*\M*, e)$ is well-formed.
 %
   \begin{equation}
     \name{Req}\label{eq:type-req}
-    \AxiomC{$\gctx{e}{\type{\*\H*}}$}
-    \AxiomC{$\meth{m}{x}{\tau_p}{\tau}\in\*\H*$}
+    \AxiomC{$\gctx{e}{\type{\*H*}}$}
+    \AxiomC{$\meth{m}{x}{\tau_p}{\tau}\in\*H*$}
     \AxiomC{$\gctx{\*e_a}{\tau_a}*$}
     \AxiomC{$\*\tau_a\sub\tau_p*$}
     \QuaternaryInfC{$\gctx{e.m(\*e_a*)}{\tau}$}
@@ -82,10 +82,10 @@ $(\*\M*, e)$ is well-formed.
 %
   \begin{equation}
     \name{Obj}\label{eq:type-obj}
-    \AxiomC{$\overline{m_i\notin\*\H*\setminus\H_i}$}
-    \AxiomC{$\G,\self:\type{\*\H*} \vdash
-      \*\methh{\H}{e}~\checkmark*$}
-    \BinaryInfC{$\gctx{\object{\*\methh{\H}{e}*}}{\type{\*\H*}}$}
+    \AxiomC{$\overline{m_i\notin\*H*\setminus H_i}$}
+    \AxiomC{$\G,\self:\type{\*H*} \vdash
+      \*\methh{H}{e}~\checkmark*$}
+    \BinaryInfC{$\gctx{\object{\*\methh{H}{e}*}}{\type{\*H*}}$}
     \DisplayProof
   \end{equation}
 %
@@ -100,107 +100,4 @@ $(\*\M*, e)$ is well-formed.
 
   \caption{Tiny Grace expression and method typing rules}\label{fig:typing}
 \end{figure}
-
-\subsection{Example}\label{sec:typing-example}
-
-\begin{scope}
-  \newcommand{\name}[1]{\tag{\textsc{Ex-#1}}}
-  \def\Gp{\G, \self : \idt}
-  \def\wrh{\mlst{wrap}({\param{x}{}}) \to {\vlt}}
-  \def\wrt{\overset{w}\tau}
-  \def\wrm{\methh{\wrh}{\vob}}
-  \def\vlh{\head{value}{}{}}
-  \def\vlt{\overset{v}\tau}
-  \def\vlm{\methh{\vlh}{\mlst{x}}}
-  \def\idt{\overset{id}\tau}
-  \def\idm{\method{\mlst{id}}{\param{y}{}}{\type{}}{\mlst{y}}}
-  \def\vob{\overset{v}\O}
-  \def\aob{\overset{id}\O}
-  \def\e{\self.\mlst{wrap}(\aob)}
-
-  Continuing the example from the previous section, we can ensure that the
-  example program is well-formed. For the sake of space, we define some initial
-  bindings:
-
-  \begin{lstlisting}
-$\vlt =$ { value() -> {} }
-$\wrt =$ { wrap(x : {}) -> $\vlt$ }
-$\idt =$ { id(y : {}) -> {} }
-$\vob =$ object { method value() -> {} { x } }
-$\aob =$ object { method id(y : {}) -> {} { y } }
-  \end{lstlisting}
-
-  \noindent Working backwards, we can begin by applying Rule~\ref{eq:type-prg}
-  to the example program.
-%
-  \begin{equation}
-    \name{Prg}\label{eq:typex-prg}
-    \AxiomC{\ref{eq:typex-mod}}
-    \AxiomC{\ref{eq:typex-req}}
-    \BinaryInfC{$\pjdg{\wrm}{\e}$}
-    \DisplayProof
-  \end{equation}
-
-  \noindent First we need to type the object body with Rule~\ref{eq:type-obj}:
-%
-  \begin{equation}
-    \name{Mod}\label{eq:typex-mod}
-    \AxiomC{$\mlst{wrap} \notin \varnothing$}
-    \AxiomC{\ref{eq:typex-wrap}}
-    \BinaryInfC{$\ctx{\varnothing}{\object{\wrm}}{\wrt}$}
-    \DisplayProof
-  \end{equation}
-
-  \noindent This requires that we ensure the \lstinline{wrap} method is
-  well-formed in the environment holding the object type as $\self$, defined as
-  $\G = \self : \wrt$, using Rule~\ref{eq:type-meth} (by
-  Lemma~\ref{lem:sub-reflexive} subtyping is reflexive, so we don't bother
-  elaborating $\vlt \sub \vlt$):
-%
-  \begin{equation}
-    \name{Wrap}\label{eq:typex-wrap}
-    \AxiomC{$x \notin \G$}
-    \AxiomC{$\mlst{value} \notin \varnothing$}
-    \AxiomC{$\ctx{\G, \param{x}{}}{\mlst{x}}{(\G, \param{x}{})(\mlst{x})}$}
-    \UnaryInfC{$\ctx{\G, \param{x}{}}{\mlst{x}}{\type{}}$}
-    \AxiomC{$\type{} \sub \type{}$}
-    \BinaryInfC{$\mctx{\G, \param{x}{}}{\vlm}$}
-    \BinaryInfC{$\ctx{\G, \param{x}{}}{\vob}{\vlt}$}
-    \AxiomC{$\vlt \sub \vlt$}
-    \TrinaryInfC{$\gmctx{\wrm}$}
-    \DisplayProof
-  \end{equation}
-
-  \noindent The method body now has the type $\wrt$, so we apply
-  Rule~\ref{eq:type-req} to the expression with the environment $\G = \self :
-  \wrt$:
-%
-  \begin{equation}
-    \name{Req}\label{eq:typex-req}
-    \AxiomC{$\gctx{\self}{\wrt}$}
-    \AxiomC{$\wrh \in \wrt$}
-    \AxiomC{\ref{eq:typex-arg}}
-    \AxiomC{$\idt \sub \type{}$}
-    \QuaternaryInfC{$\gctx{\self.\mlst{wrap}(\aob)}{\vlt}$}
-    \DisplayProof
-  \end{equation}
-
-  \noindent Finally, we have to ensure that the argument of the request to the
-  \lstinline{wrap} method does in fact have the type $\idt$, by once again apply
-  Rule~\ref{eq:type-obj}:
-%
-  \begin{equation}
-    \name{Arg}\label{eq:typex-arg}
-    \AxiomC{$y \notin \Gp$}
-    \AxiomC{$\ctx{\Gp, y : \type{}}{y}{(\Gp, y : \type{})(y)}$}
-    \UnaryInfC{$\ctx{\Gp, y : \type{}}{y}{\type{}}$}
-    \AxiomC{$\type{} \sub \type{}$}
-    \TrinaryInfC{$\mctx{\Gp}{\idm}$}
-    \UnaryInfC{$\gctx{\aob}{\idt}$}
-    \DisplayProof
-  \end{equation}
-
-  \noindent This completes the branches of the example~\ref{eq:typex-prg},
-  confirming that the example program is well-formed.
-\end{scope}
 

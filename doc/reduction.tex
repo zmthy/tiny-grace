@@ -1,16 +1,16 @@
 \section{Reduction}\label{sec:reduction}
 
-Given a Tiny Grace program $(\*\M*, e)$, we can `run' $e$ in the scope of
-$\*\M*$ by applying substitution from Section~\ref{sec:substitution} and
+Given a Tiny Grace program $(\*M*, e)$, we can `run' $e$ in the scope of
+$\*M*$ by applying substitution from Section~\ref{sec:substitution} and
 big-step reduction from Section~\ref{sec:reduction-semantics} to
-$[\object{\*\M*}/\self]e \stot \O$, producing an outcome in the form of the
-object literal $\O$.
+$[\object{\*M*}/\self]e \stot O$, producing an outcome in the form of the
+object literal $O$.
 
 \subsection{Substitution}\label{sec:substitution}
 
 The substitution used in Tiny Grace reduction is non-trivially different from
 standard substitution, so it is redefined in Figure~\ref{fig:substitution}.
-Substitution in Tiny Grace is written $[\O/\xs]e$. The important distinction is
+Substitution in Tiny Grace is written $[O/\xs]e$. The important distinction is
 Rule~\ref{eq:sub-self}, which prevents $\self$ from changing for inner objects.
 
 \begin{figure}[h]
@@ -20,35 +20,35 @@ Rule~\ref{eq:sub-self}, which prevents $\self$ from changing for inner objects.
 
   \begin{equation}
     \name{Var}\label{eq:sub-var}
-    \AxiomC{$[\O/\xs]\xs\bto\O$}
+    \AxiomC{$[O/\xs]\xs\bto O$}
     \DisplayProof
   \end{equation}
 %
   \begin{equation}
     \name{None}\label{eq:sub-none}
-    \AxiomC{$[\O/\xs]y\bto y\quad\mathbf{if}~\xs\neq y$}
+    \AxiomC{$[O/\xs]y\bto y\quad\mathbf{if}~\xs\neq y$}
     \DisplayProof
   \end{equation}
   \vspace{-.8em}
   \begin{equation}
     \name{Self}\label{eq:sub-self}
-    \AxiomC{$[\O/\self]\object{\*\M*}\bto\object{\*\M*}$}
+    \AxiomC{$[O/\self]\object{\*M*}\bto\object{\*M*}$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \name{Obj}\label{eq:sub-obj}
-    \AxiomC{$\*[\O/x]e\bto e\′*$}
-    \UnaryInfC{$[O/x]\object{\*\methh{\H}{e}*} \bto
-      \object{\*\methh{\H}{e\′}*}$}
+    \AxiomC{$\*[O/x]e\bto e\′*$}
+    \UnaryInfC{$[O/x]\object{\*\methh{H}{e}*} \bto
+      \object{\*\methh{H}{e\′}*}$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \name{Req}\label{eq:sub-req}
-    \AxiomC{$[\O/\xs]e\bto e\′$}
-    \AxiomC{$\*[\O/\xs]e_a\bto e_a\′*$}
-    \BinaryInfC{$[\O/\xs]e.m(\*e_a*)\bto e\′.m(\*e_a\′*)$}
+    \AxiomC{$[O/\xs]e\bto e\′$}
+    \AxiomC{$\*[O/\xs]e_a\bto e_a\′*$}
+    \BinaryInfC{$[O/\xs]e.m(\*e_a*)\bto e\′.m(\*e_a\′*)$}
     \DisplayProof
   \end{equation}
 
@@ -61,7 +61,7 @@ The rules for the reduction relation $\sto$ are given in
 Figure~\ref{fig:reduction}. The relation is written $e \sto e\′$, meaning that
 the expression $e$ reduces to $e\′$ in a single small-step reduction step. We
 write $\stot$ for the reflexive transitive closure of $\sto$. The reduction $e
-\stot \O$ is the big-step form of the reduction semantics.
+\stot O$ is the big-step form of the reduction semantics.
 
 \begin{figure}[h]
   \centering
@@ -76,111 +76,18 @@ write $\stot$ for the reflexive transitive closure of $\sto$. The reduction $e
   \begin{equation}
     \tag{\textsc{R-Arg}}\label{eq:red-arg}
     \AxiomC{$e\sto e\′$}
-    \UnaryInfC{$\O.m(\*\O*, e, \*e_a*) \sto
-      \O.m(\*\O*, e\′, \*e_a*)$}
+    \UnaryInfC{$O.m(\*O*, e, \*e_a*) \sto
+      O.m(\*O*, e\′, \*e_a*)$}
     \DisplayProof
   \end{equation}
 
   \begin{equation}
     \tag{\textsc{R-Req}}\label{eq:red-req}
-    \AxiomC{$\method{m}{\*x:\tau_p*}{\tau}{e}\in\*\M*$}
-    \UnaryInfC{$\object{\*\M*}.m(\*\O*)\sto[\*\O/x*,\object{\*\M*}/\self]e$}
+    \AxiomC{$\method{m}{\*x:\tau_p*}{\tau}{e}\in\*M*$}
+    \UnaryInfC{$\object{\*M*}.m(\*O*)\sto[\*O/x*,\object{\*M*}/\self]e$}
     \DisplayProof
   \end{equation}
 
   \caption{Small-step semantics of Tiny Grace reduction}\label{fig:reduction}
 \end{figure}
-
-\subsection{Example}
-
-\begin{scope}
-  \def\ov{\overset{v}{\O}}
-  \def\oid{\overset{id}{\O}}
-
-  \def\x{\mlst{x}}
-  \def\y{\mlst{y}}
-
-  \def\vtype{\type{\head{value}{}{}}}
-  \def\wrap{\method{\mlst{wrap}}{\x : \type{}}{\vtype}{\ov}}
-  \def\mid{\method{\mlst{id}}{\y : \type{}}{\type{}}{\x}}
-  \def\exp{\self.\mlst{wrap}\text{\po}\oid\text{\pc}}
-
-  As the Section~\ref{sec:typing-example} demonstrated that the example program
-  was well-formed, we can run the program. Beginning with the example program:
-
-  \begin{lstlisting}
-(method wrap(x : {}) -> { value() -> {} } {
-  object { method value() -> {} { x } }
-}, self.wrap(object { method id(y : {}) -> {} { y } }))
-  \end{lstlisting}
-
-  \noindent We run the program by substituting the surrounding methods in an
-  object for $\self$.
-
-  \begin{lstlisting}
-[object{
-  method wrap(x : {}) -> { value() -> {} } {
-    object { method value() -> {} { x } }
-  }
-}/self]self.wrap(object { method id(y : {}) -> {} { y } })
-  \end{lstlisting}
-
-  \noindent This substitution uses Rule~\ref{eq:sub-var} to replace $\self$, as
-  well as Rule~\ref{eq:sub-self} on the argument to the \lstinline{wraq} method,
-  which has no effect and does not proceed further.
-
-  \begin{lstlisting}
-object{
-  method wrap(x : {}) -> { value() -> {} } {
-    object { method value() -> {} { x } }
-  }
-}.wrap(object { method id(y : {}) -> {} { y } })
-  \end{lstlisting}
-
-  \noindent Now a step of reduction takes place. The top-level expression is a
-  request, so we apply Rule~\ref{eq:red-req}, replacing the request with a
-  substitution over the appropriate method's body.
-
-  \begin{lstlisting}
-[object { method id(y : {}) -> {} { y } }/x, object {
-  method wrap(x : {}) -> { value() -> {} } {
-    object { method value() -> {} { x } }
-  }
-}/self]object { method value() -> {} { x } }
-  \end{lstlisting}
-
-  \noindent The substitution of $\self$ applies Rule~\ref{eq:sub-self}, which
-  again has no effect.
-
-  \begin{lstlisting}
-[object{ method id(y : {}) -> {} { y } }/x]object{ method value() -> {} { x } }
-  \end{lstlisting}
-
-  \noindent The remaining substitution applies Rule~\ref{eq:sub-obj}, which
-  reaches into the object's method, replacing its body:
-
-  \begin{lstlisting}
-[object { method id(y : {}) -> {} { y } }/x]x
-  \end{lstlisting}
-
-  \noindent This is a simple application of Rule~\ref{eq:sub-var}.
-
-  \begin{lstlisting}
-object { method id(y : {)}) -> {} { y } }
-  \end{lstlisting}
-
-  \noindent Completing the application of Rule~\ref{eq:sub-obj} produces the
-  following expression:
-
-  \begin{lstlisting}
-object {
-  method value() -> {} {
-    object { method id(y : {}) -> {} { y }}
-  }
-}
-  \end{lstlisting}
-
-  \noindent As this expression is an object literal, there are no more rules
-  which can be applied and the execution is complete.
-\end{scope}
 

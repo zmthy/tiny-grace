@@ -1,8 +1,8 @@
 \section{Properties}
 
 \begin{theorem}[Progress]\label{th:progress}
-  Given a well-formed program $(\*\M*,e)$, any expression $e\′$ in the
-  relation $e\stot e\′$ is either an object literal $\O$ or can be reduced
+  Given a well-formed program $(\*M*,e)$, any expression $e\′$ in the
+  relation $e\stot e\′$ is either an object literal $O$ or can be reduced
   by an application of $\sto$.
 
   \begin{lemma}[Substitution Completeness]\label{lem:sub-complete}
@@ -19,8 +19,8 @@
   \begin{proof}
     A well-typed program has no free variables, so $\xs$ is never encountered in
     reduction. Inductive steps for method requests $e.m(\*e_a*)$ and
-    $\O.m(\*e_a*)$ are trivial, so we need only show that a method request
-    $\O.m(\*\O_a*)$ can always proceed and will always complete.
+    $O.m(\*e_a*)$ are trivial, so we need only show that a method request
+    $O.m(\*O_a*)$ can always proceed and will always complete.
     Rule~\ref{eq:type-obj} guarantees that the requested method always exists in
     the receiver, which is the only requirement for $\sto$ to be applied to this
     form of method request. The relation is satisfied as long as the
@@ -71,8 +71,8 @@
   \end{lemma}
 
   \begin{lemma}[Substitution Preservation]\label{lem:preservation}
-    If $\ctx{\G,\xs:\tau_x}{e}{\tau}$, and $\gctx{\O}{\tau_o}$ for any $\O$
-    where $\tau_o\sub\tau_x$, then $\gctx{[\O/\xs]e}{\tau\′}$ for some
+    If $\ctx{\G,\xs:\tau_x}{e}{\tau}$, and $\gctx{O}{\tau_o}$ for any $O$
+    where $\tau_o\sub\tau_x$, then $\gctx{[O/\xs]e}{\tau\′}$ for some
     $\tau\′\sub\tau$.
 
     \begin{proof}
@@ -81,16 +81,16 @@
       \begin{match}
         \case{\ref{eq:sub-var}}{e=\xs}
         $\ctx{\G,\xs:\tau_x}{\xs}{\tau_x}$, so $\tau=\tau_x$.
-        $[\O/\xs]\xs\bto\O$ and $\gctx{\O}{\tau_o}$. $\tau_o\sub\tau_x$, so
+        $[O/\xs]\xs\bto O$ and $\gctx{O}{\tau_o}$. $\tau_o\sub\tau_x$, so
         $\tau_o\sub\tau$.
 
         \case{\ref{eq:sub-none}}{e=y~\mathbf{where}~y\neq\xs}
-        $[\O/\xs]y\bto y$ and $\gctx{y}{\tau}$. By
+        $[O/\xs]y\bto y$ and $\gctx{y}{\tau}$. By
         Lemma~\ref{lem:sub-reflexive}, $\tau\sub\tau$.
 
         \case{\ref{eq:sub-req}}{e=e_r.m (\*e_a*)}
-        $\G\vdash e_r:\tau_r,\*e_a:\tau_a*$. By induction, $[\O/\xs]e_r\bto
-        e_r\′$ and $\*[\O/\xs]e_a\bto e_a\′*$ with $\G,\xs:\tau_x\vdash
+        $\G\vdash e_r:\tau_r,\*e_a:\tau_a*$. By induction, $[O/\xs]e_r\bto
+        e_r\′$ and $\*[O/\xs]e_a\bto e_a\′*$ with $\G,\xs:\tau_x\vdash
         e_r\′:\tau_r\′,\*e\′_a:\tau_a\′*$ where $\tau_r\′\sub\tau_r$ and
         $\*\tau_a\′\sub\tau_a*$. By Rule~\ref{eq:type-req}, there exists a
         method with head $m(\*x_p:\tau_p*)\to\tau$ in $\tau_r$ where
@@ -106,7 +106,7 @@
           {e=\object{\overline{\method{m}{\*x_p:\tau_p*}{\tau_s}{e_b}}},\xs=x}
         By Rule~\ref{eq:type-req},
         $\overline{\ctx{\G,\*x_p:\tau_p*}{e_b}{\tau_b}}$ where
-        $\tau_b\sub\tau_s$. $x\notin\*x_p*$, so by induction $\*[\O/x]e_b\bto
+        $\tau_b\sub\tau_s$. $x\notin\*x_p*$, so by induction $\*[O/x]e_b\bto
         e_b\′*$ with $\*\ctx{\G,\*x_p:\tau_p*}{e_b\′}{\tau_b\′}*$ where
         $\*\tau_b\′\sub\tau_b*$.  As $\*\tau_b\′\sub\tau_b*$ and
         $\*\tau_b\sub\tau_s*$, by Lemma~\ref{lem:sub-transitive},
@@ -114,9 +114,9 @@
         $\gctx{\object{\overline{\method{m}{\*x_p:\tau_p*}{\tau_s}{e_b\′}}}}
         {\tau}$, and by Lemma~\ref{lem:sub-reflexive}, $\tau\sub\tau$.
 
-        \case{\ref{eq:sub-self}}{e = \object{\*\M_i*}, \xs= \self}
-        $[\O/\self]\object{\*\M*}\bto\object{\*\M*}$ and
-        $\gctx{\object{\*\M*}}{\tau}$. By Lemma~\ref{lem:sub-reflexive},
+        \case{\ref{eq:sub-self}}{e = \object{\*M_i*}, \xs= \self}
+        $[O/\self]\object{\*M*}\bto\object{\*M*}$ and
+        $\gctx{\object{\*M*}}{\tau}$. By Lemma~\ref{lem:sub-reflexive},
         $\tau\sub\tau$.
       \end{match}
     \end{proof}
@@ -128,13 +128,13 @@
     remains.
 %
     \begin{align*}
-      &e=\object{\*\M*}.m(\*\O_a*)
-      &\method{m}{\*x_p:\tau_p*}{\tau}{e_b}\in\*\M*\\
-      &e\′=[\*\O_a/x_p*,\object{\*\M*}/\self]e_b&
+      &e=\object{\*M*}.m(\*O_a*)
+      &\method{m}{\*x_p:\tau_p*}{\tau}{e_b}\in\*M*\\
+      &e\′=[\*O_a/x_p*,\object{\*M*}/\self]e_b&
     \end{align*}
 
     \noindent By Rules~\ref{eq:type-req} and~\ref{eq:type-obj}, for some types
-    $\*\tau_a*$ we have $\G\vdash\*\O_a:\tau_a*$ and $\*\tau_a\sub\tau_p*$. By
+    $\*\tau_a*$ we have $\G\vdash\*O_a:\tau_a*$ and $\*\tau_a\sub\tau_p*$. By
     Rule~\ref{eq:type-meth}, $\ctx{\G,\*x_p:\tau_p*}{e_b}{\tau_b}$ where
     $\tau_b\sub\tau$. By Lemma~\ref{lem:preservation}, $\gctx{e\′}{\tau_b\′}$
     where $\tau_b\′\sub\tau$, and so by Lemma~\ref{lem:sub-transitive},
@@ -145,7 +145,7 @@
 \begin{theorem}[Type Soundness]\label{th:type-soundness}
   If $\gctx{e}{\tau}$ and $e\stot e\′$ with $e\′$ in normal form
   (there is no $e^{\prime\prime}$ such that $e\′\sto e^{\prime\prime}$),
-  then $e\′$ is an object literal $\O$ with $\gctx{\O}{\tau\′}$ where
+  then $e\′$ is an object literal $O$ with $\gctx{O}{\tau\′}$ where
   $\tau\′\sub\tau$.
 
   \begin{proof}
@@ -153,7 +153,7 @@
   \end{proof}
 \end{theorem}
 
-\noindent This proves that for any Tiny Grace program $(\*\M*, e)$, if
-$\pjdg{\*\M*}{e}$, then the program will always successfully run to the
+\noindent This proves that for any Tiny Grace program $(\*M*, e)$, if
+$\pjdg{\*M*}{e}$, then the program will always successfully run to the
 production of an appropriate object literal or continue indefinitely.
 

@@ -11,9 +11,9 @@ As an example, we will model a constructor that takes an object, and `wraps' it
 in another object, behind the \lstinline{value} method.
 
 \begin{lstlisting}
-method wrap(x : {}) -> { value() -> {} } {
+method wrap(x : type {}) -> type { value() -> type {} } {
   object {
-    method value() -> {} { x }
+    method value() -> type {} { x }
   }
 }
 \end{lstlisting}
@@ -29,7 +29,7 @@ unqualified, and so the method must be requested as \lstinline{self.wrap}.
 
 \begin{lstlisting}
 self.wrap(object {
-  method id(y : {}) -> {} { y }
+  method id(y : type {}) -> type {} { y }
 })
 \end{lstlisting}
 
@@ -40,18 +40,18 @@ not allow a request for the method \lstinline{id} on the result.
 \subsection{Syntax}\label{sec:syntax}
 
 The abstract syntax for Tiny Grace is defined in
-Figure~\ref{fig:abstract-syntax}. The metavariable $\M$ ranges over methods;
-$\O$ over object literals; $x$ and $y$ over variable names; $\xs$ over both
+Figure~\ref{fig:abstract-syntax}. The metavariable $M$ ranges over methods;
+$O$ over object literals; $x$ and $y$ over variable names; $\xs$ over both
 variable names and the {\sffamily\bfseries self} keyword; $\tau$, $\sigma$ and
-$\upsilon$ over types; $\H$ over method headers, $m$ over method names, and $e$
+$\upsilon$ over types; $H$ over method headers, $m$ over method names, and $e$
 over expressions. We write $\*e*$ to indicate a possibly empty sequence of
 comma-separated expressions $e_1, \dots, e_n$, as well as for method header
-parameters $\*x : \tau*$. We also write $\*\H*$ and $\*\M*$ to indicate a
-possibly empty set of method headers with unique names $\H_1 \dots \H_n$ and
-$\M_1 \dots \M_n$ respectively.
+parameters $\*x : \tau*$. We also write $\*H*$ and $\*M*$ to indicate a
+possibly empty set of method headers with unique names $H_1 \dots H_n$ and
+$M_1 \dots M_n$ respectively.
 
 As an object body is just a sequence of methods, a Tiny Grace program is any
-pair of the form $(\*\M*, e)$.
+pair of the form $(\*M*, e)$.
 
 \begin{figure}[h]
   \centering
@@ -67,15 +67,15 @@ pair of the form $(\*\M*, e)$.
   \vspace{1em}
   \begin{minipage}{11.7em}
     \begin{grammar}
-      <\M> ::= "method" $\H$ \bo~$e$ \bc
+      <M> ::= "method" $H$ \bo~$e$ \bc
 
-      <\O> ::= "object" \bo~$\*\M*$ \bc
+      <O> ::= "object" \bo~$\*M*$ \bc
 
-      <\H> ::= <m>`('$\*x : \tau*$`)' $\to$ $\tau$
+      <H> ::= <m>`('$\*x : \tau*$`)' $\to$ $\tau$
 
-      <\tau> ::= \bo~$\*\H*$ \bc
+      <\tau> ::= "type" \bo~$\*H*$ \bc
 
-      <e> ::= <x> | "self" | <e>`.'<m>($\*e*$) | $\O$
+      <e> ::= <x> | "self" | <e>`.'<m>($\*e*$) | $O$
     \end{grammar}
   \end{minipage}
 
