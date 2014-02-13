@@ -6,6 +6,3 @@ clean:
 	rm -f tiny-grace.bbl
 	rm -f .nfs*
 
-public: tiny-grace.pdf
-	cp tiny-grace.pdf ~/public_html/phd/
-

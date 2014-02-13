@@ -7,6 +7,3 @@ clean:
 	latexmk -C
 	rm -f *.nav *.snm *.vrb
 
-public: pdf
-	cp "$j.pdf" ~/public_html/talks/
-
