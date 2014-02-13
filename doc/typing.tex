@@ -6,8 +6,8 @@ with the typing rules in Section~\ref{sec:typing-rules} as:
 
 \begin{equation}
   \tag{\textsc{T-Prg}}\label{eq:type-prg}
-  \AxiomC{$\ctx{\varnothing}{\object{\ol{\methh{H}{e_b}}}}{\type{\ol{H}}}$}
-  \AxiomC{$\ctx{\self : \type{\ol{H}}}{e}{\tau}$}
+  \AxiomC{$\tjdg{\varnothing}{\object{\ol{\methh{H}{e_b}}}}{\type{\ol{H}}}$}
+  \AxiomC{$\tjdg{\self : \type{\ol{H}}}{e}{\tau}$}
   \BinaryInfC{$\pjdg{\ol{\methh{H}{e_b}}}{e}$}
   \DisplayProof
 \end{equation}
@@ -52,8 +52,8 @@ names to types, written $\ol{\xs_i : \tau_i}$. The empty environment is written
 $\varnothing$. Environments can be concatenated together, typically written
 $\G,\ol{\xs_i : \tau_i}$, with variables that exist in both environments bound to
 the mapping in the latter environment. The typing judgement for expressions has
-the form $\gctx{e}{\tau}$, meaning that in the environment $\G$, $e$ has the
-type $\tau$. The typing judgement for methods has the form $\gmctx{M}$, meaning
+the form $\gtjdg{e}{\tau}$, meaning that in the environment $\G$, $e$ has the
+type $\tau$. The typing judgement for methods has the form $\gmjdg{M}$, meaning
 that in the environment $\G$, the method $M$ is well-formed. The typing
 judgement for programs has the form $\pjdg{\ol{M}}{e}$, meaning that the program
 $(\ol{M}, e)$ is well-formed.
@@ -66,17 +66,17 @@ $(\ol{M}, e)$ is well-formed.
   \begin{equation}
     \name{Var}\label{eq:type-var}
     \AxiomC{$\xs:\tau\in\G$}
-    \UnaryInfC{$\gctx{\xs}{\tau}$}
+    \UnaryInfC{$\gtjdg{\xs}{\tau}$}
     \DisplayProof
   \end{equation}
 %
   \begin{equation}
     \name{Req}\label{eq:type-req}
-    \AxiomC{$\gctx{e}{\type{\ol{H}}}$}
+    \AxiomC{$\gtjdg{e}{\type{\ol{H}}}$}
     \AxiomC{$\meth{m}{x}{\tau_p}{\tau}\in\ol{H}$}
-    \AxiomC{$\gctx{\ol{e_a}{\tau_a}}$}
+    \AxiomC{$\gtjdg{\ol{e_a}{\tau_a}}$}
     \AxiomC{$\ol{\tau_a\sub\tau_p}$}
-    \QuaternaryInfC{$\gctx{e.m(\ol{e_a})}{\tau}$}
+    \QuaternaryInfC{$\gtjdg{e.m(\ol{e_a})}{\tau}$}
     \DisplayProof
   \end{equation}
 %
@@ -85,16 +85,16 @@ $(\ol{M}, e)$ is well-formed.
     \AxiomC{$\overline{m_i\notin\ol{H}\setminus H_i}$}
     \AxiomC{$\G,\self:\type{\ol{H}} \vdash
       \ol{\methh{H}{e}~\checkmark}$}
-    \BinaryInfC{$\gctx{\object{\ol{\methh{H}{e}}}}{\type{\ol{H}}}$}
+    \BinaryInfC{$\gtjdg{\object{\ol{\methh{H}{e}}}}{\type{\ol{H}}}$}
     \DisplayProof
   \end{equation}
 %
   \begin{equation}
     \name{Meth}\label{eq:type-meth}
     \AxiomC{$\ol{x\notin\G}$}
-    \AxiomC{$\ctx{\G,\ol{x:\tau_p}}{e}{\tau}$}
+    \AxiomC{$\tjdg{\G,\ol{x:\tau_p}}{e}{\tau}$}
     \AxiomC{$\tau\sub\tau\′$}
-    \TrinaryInfC{$\gmctx{\method{m}{\ol{x:\tau_p}}{\tau\′}{e}}$}
+    \TrinaryInfC{$\gmjdg{\method{m}{\ol{x:\tau_p}}{\tau\′}{e}}$}
     \DisplayProof
   \end{equation}
 

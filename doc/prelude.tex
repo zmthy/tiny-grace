@@ -19,14 +19,14 @@
 
 % Environment definitions.
 \newcommand{\G}{\Gamma}
-\newcommand{\ctx}[3]{#1\vdash#2:#3}
-\newcommand{\gctx}[2]{\ctx{\G}{#1}{#2}}
-\newcommand{\ectx}[2]{\ctx{\varnothing}{#1}{#2}}
+\newcommand{\tjdg}[3]{#1\vdash#2:#3}
+\newcommand{\gtjdg}[2]{\tjdg{\G}{#1}{#2}}
+\newcommand{\etjdg}[2]{\tjdg{\varnothing}{#1}{#2}}
 \newcommand{\cjdg}[2]{#1\mid#2}
 \newcommand{\sjdg}[3]{\cjdg{#1\sub#2}{#3}}
 \newcommand{\ssjdg}[2]{\sjdg{#1}{#2}\Sigma}
-\newcommand{\mctx}[2]{#1\vdash#2~\checkmark}
-\newcommand{\gmctx}[1]{\mctx{\G}{#1}}
+\newcommand{\mjdg}[2]{#1\vdash#2~\checkmark}
+\newcommand{\gmjdg}[1]{\mjdg{\G}{#1}}
 \newcommand{\pjdg}[2]{(#1, #2)~\checkmark}
 
 % Multiplicities with overline.
