@@ -3,5 +3,5 @@ tiny-grace.pdf: *.tex
 
 clean:
 	latexmk -C
-	rm -f tiny-grace.bbl
+	rm -f *.log *.bbl
 

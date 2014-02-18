@@ -40,20 +40,19 @@ not allow a request for the method \lstinline{id} on the result.
 \subsection{Syntax}\label{sec:syntax}
 
 The abstract syntax for Tiny Grace is defined in
-Figure~\ref{fig:abstract-syntax}. The metavariable $M$ ranges over methods;
-$O$ over object literals; $x$ and $y$ over variable names; $\xs$ over both
-variable names and the {\sffamily\bfseries self} keyword; $\tau$, $\sigma$ and
-$\upsilon$ over types; $H$ over method headers, $m$ over method names, and $e$
-over expressions. We write $\ol{e}$ to indicate a possibly empty sequence of
-comma-separated expressions $e_1, \dots, e_n$, as well as for method header
-parameters $\ol{x : \tau}$. We also write $\ol{H}$ and $\ol{M}$ to indicate a
-possibly empty set of method headers with unique names $H_1 \dots H_n$ and
-$M_1 \dots M_n$ respectively.
+Figure~\ref{fig:abstract-syntax}. The metavariable $M$ ranges over methods; $O$
+over object literals; $x$ and $y$ over variable names; $x$ over both variables;
+$\tau$, $\sigma$ and $\upsilon$ over types; $H$ over method headers, $m$ over
+method names, and $e$ over expressions. We write $\ol{e}$ to indicate a possibly
+empty sequence of comma-separated expressions $e_1, \dots, e_n$, as well as for
+method header parameters $\ol{x : \tau}$. We also write $\ol{H}$ and $\ol{M}$ to
+indicate a possibly empty set of method headers with unique names $H_1 \dots
+H_n$ and $M_1 \dots M_n$ respectively.
 
 As an object body is just a sequence of methods, a Tiny Grace program is any
 pair of the form $(\ol{M}, e)$.
 
-\begin{figure}[h]
+\begin{figure}
   \centering
 
   \grammarindent3.4em
@@ -65,17 +64,17 @@ pair of the form $(\ol{M}, e)$.
   \renewcommand{\litright}{}
 
   \vspace{1em}
-  \begin{minipage}{11.7em}
+  \begin{minipage}{10.3em}
     \begin{grammar}
-      <M> ::= "method" $H$ \bo~$e$ \bc
+      <O> ::= "object" \!$\ocol{M}$
 
-      <O> ::= "object" \bo~$\ol{M}$ \bc
+      <M> ::= "method" $H$ $\oc{e}$
 
-      <H> ::= <m>`('$\ol{x : \tau}$`)' $\to$ $\tau$
+      <\tau> ::= "type" \!$\ocol{H}$
 
-      <\tau> ::= "type" \bo~$\ol{H}$ \bc
+      <H> ::= <m>`('$\ol{x:\tau}$`)' $\to\tau$
 
-      <e> ::= <x> | "self" | <e>`.'<m>($\ol{e}$) | $O$
+      <e> ::= <x> | <e>`.'<m>($\ol{e}$) | $O$
     \end{grammar}
   \end{minipage}
 

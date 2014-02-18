@@ -21,13 +21,18 @@
 \newcommand{\G}{\Gamma}
 \newcommand{\tjdg}[3]{#1\vdash#2:#3}
 \newcommand{\gtjdg}[2]{\tjdg{\G}{#1}{#2}}
-\newcommand{\etjdg}[2]{\tjdg{\varnothing}{#1}{#2}}
+\newcommand{\oltjdg}[3]{#1\vdash\ol{#2:#3}}
+\newcommand{\olgtjdg}[2]{\oltjdg{\G}{#1}{#2}}
 \newcommand{\cjdg}[2]{#1\mid#2}
-\newcommand{\sjdg}[3]{\cjdg{#1\sub#2}{#3}}
-\newcommand{\ssjdg}[2]{\sjdg{#1}{#2}\Sigma}
+\newcommand{\sjdg}[2]{#1\sub#2}
 \newcommand{\mjdg}[2]{#1\vdash#2~\checkmark}
 \newcommand{\gmjdg}[1]{\mjdg{\G}{#1}}
 \newcommand{\pjdg}[2]{(#1, #2)~\checkmark}
+
+% Type shorthands.
+\newcommand{\prmt}{\tau_p}
+\newcommand{\rett}{\tau_m}
+\newcommand{\rect}{\tau_r}
 
 % Multiplicities with overline.
 \newcommand{\ol}[1]{\overline{#1}}
@@ -39,40 +44,40 @@
 \newcommand{\sub}{<\kern-1pt:}
 
 % Braces and parentheses.
-\newcommand{\bo}{{\sffamily\upshape\{}}
-\newcommand{\bc}{{\sffamily\upshape\}}}
-\newcommand{\po}{{\sffamily\upshape(}}
-\newcommand{\pc}{{\sffamily\upshape)}}
+\newcommand{\bo}{\text{\sffamily\upshape\{}}
+\newcommand{\bc}{\text{\sffamily\upshape\}}}
+\newcommand{\po}{\text{\sffamily\upshape(}}
+\newcommand{\pc}{\text{\sffamily\upshape)}}
 
 % Tiny Grace keywords and constructs.
-\newcommand{\mh}[4]{\ol{\meth{#1}{#2}{#3}{#4}}}
-\newcommand{\mset}[4]{\text{\key{type}~\bo}\mh{#1}{#2}{#3}{#4}\text{\bc}}
-\newcommand{\meth}[4]{#1\text{\po}\ol{#2:#3}\text{\pc}\to#4}
-\newcommand{\mlst}[1]{\text{\lstinline{#1}}}
-\newcommand{\key}[1]{{\sffamily\bfseries#1}}
-\newcommand{\object}[1]{\text{\key{object}\bo}#1\text{\bc}}
+\newcommand{\key}[1]{\text{\sffamily\bfseries#1}}
+\newcommand{\oc}[1]{\bo~\!#1~\!\bc}
+\newcommand{\ocol}[1]{\oc{\ol{#1}}}
+\newcommand{\koc}[2]{\key{#1}~\!\oc{#2}}
+\newcommand{\object}[1]{\koc{object}{#1}}
+\newcommand{\etype}{\key{type}~\!\bo\bc}
+\newcommand{\type}[1]{\koc{type}{#1}}
+\newcommand{\meth}[2]{\key{method}~#1~\oc{#2}}
+\newcommand{\method}[4]{\meth{#1\po#2\pc\to#3}{#4}}
+\newcommand{\header}[4]{#1\po\ol{#2:#3}\pc\to#4}
+\newcommand{\self}{\text{\sffamily\upshape{self}}}
 \newcommand{\param}[2]{\text{\lstinline{#1}}:\type{#2}}
-\newcommand{\head}[3]{\text{\lstinline{#1}\po}#2\text{\pc}\to\type{#3}}
-\newcommand{\methh}[2]{\text{\key{method} }#1\ \text{\bo}#2\text{\bc}}
-\newcommand{\method}[4]{\methh{#1\text{\po}#2\text{\pc}\to#3}{#4}}
-\newcommand{\type}[1]{\text{\key{type}~\bo}#1\text{\bc}}
-\newcommand{\self}{\text{\key{self}}}
+\newcommand{\typeol}[1]{\type{\ol{#1}}}
 
 % Small-step reduction relation.
-\newcommand{\sto}{\overset{_\mathcal{R}}\longrightarrow}
-\newcommand{\stot}{\overset{_{\mathcal{R}^*}}{\longrightarrow}}
+\newcommand{\ssr}{\longrightarrow}
+\newcommand{\ssrt}{\longrightarrow^*}
+\newcommand{\sto}[2]{#1\longrightarrow#2}
+\newcommand{\stot}[2]{#1\longrightarrow^*#2}
 
 % Big-step reduction relation.
 \newcommand{\bto}{\Downarrow}
-
-% Variable and 'self' combo.
-\newcommand{\xs}{\overset{_\text{\sffamily\bfseries s}}x}
 
 
 % Listings settings.
 
 \lstdefinelanguage{TinyGrace}{%
-  keywords={object,method,type,self,outer},
+  keywords={object,method,type,outer},
   sensitive=true,
   literate=
     {'}{$^\prime$}1

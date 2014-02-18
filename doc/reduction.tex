@@ -1,92 +1,39 @@
 \section{Reduction}\label{sec:reduction}
 
-Given a Tiny Grace program $(\ol{M}, e)$, we can `run' $e$ in the scope of
-$\ol{M}$ by applying substitution from Section~\ref{sec:substitution} and
-big-step reduction from Section~\ref{sec:reduction-semantics} to
-$[\object{\ol{M}}/\self]e \stot O$, producing an outcome in the form of the
-object literal $O$.
-
-\subsection{Substitution}\label{sec:substitution}
-
-The substitution used in Tiny Grace reduction is non-trivially different from
-standard substitution, so it is redefined in Figure~\ref{fig:substitution}.
-Substitution in Tiny Grace is written $[O/\xs]e$. The important distinction is
-Rule~\ref{eq:sub-self}, which prevents $\self$ from changing for inner objects.
-
-\begin{figure}[h]
-  \centering
-  \newcommand{\name}[1]{\tag{\textsc{S-#1}}}
-  \addtolength{\parskip}{-1em}
-
-  \begin{equation}
-    \name{Var}\label{eq:sub-var}
-    \AxiomC{$[O/\xs]\xs\bto O$}
-    \DisplayProof
-  \end{equation}
-%
-  \begin{equation}
-    \name{None}\label{eq:sub-none}
-    \AxiomC{$[O/\xs]y\bto y\quad\mathbf{if}~\xs\neq y$}
-    \DisplayProof
-  \end{equation}
-  \vspace{-.8em}
-  \begin{equation}
-    \name{Self}\label{eq:sub-self}
-    \AxiomC{$[O/\self]\object{\ol{M}}\bto\object{\ol{M}}$}
-    \DisplayProof
-  \end{equation}
-
-  \begin{equation}
-    \name{Obj}\label{eq:sub-obj}
-    \AxiomC{$\ol{[O/x]e\bto e\′}$}
-    \UnaryInfC{$[O/x]\object{\ol{\methh{H}{e}}} \bto
-      \object{\ol{\methh{H}{e\′}}}$}
-    \DisplayProof
-  \end{equation}
-
-  \begin{equation}
-    \name{Req}\label{eq:sub-req}
-    \AxiomC{$[O/\xs]e\bto e\′$}
-    \AxiomC{$\ol{[O/\xs]e_a\bto e_a\′}$}
-    \BinaryInfC{$[O/\xs]e.m(\ol{e_a})\bto e\′.m(\ol{e_a\′})$}
-    \DisplayProof
-  \end{equation}
-
-  \caption{Big-step semantics of Tiny Grace substitution}\label{fig:substitution}
-\end{figure}
-
-\subsection{Reduction Semantics}\label{sec:reduction-semantics}
-
-The rules for the reduction relation $\sto$ are given in
-Figure~\ref{fig:reduction}. The relation is written $e \sto e\′$, meaning that
+The rules for the reduction relation $\ssr$ are given in
+Figure~\ref{fig:reduction}. The relation is written $\sto{e}{e\′}$, meaning that
 the expression $e$ reduces to $e\′$ in a single small-step reduction step. We
-write $\stot$ for the reflexive transitive closure of $\sto$. The reduction $e
-\stot O$ is the big-step form of the reduction semantics.
+write $\ssrt$ for the reflexive transitive closure of $\ssr$. The reduction
+$\stot{e}{O}$ is the big-step form of the reduction semantics. Given a Tiny
+Grace program $(\ol{M},e)$, we can `run' $e$ in the scope of $\ol{M}$ by
+applying the substitution $[\object{\ol{M}}/\self]e$, and then applying $\ssrt$,
+resulting in either an object literal $O$ or divergence.
 
-\begin{figure}[h]
+\begin{figure}
   \centering
+  \newcommand{\name}[1]{\tag{\textsc{R-#1}}}
 
-  \begin{equation}
-    \tag{\textsc{R-Rec}}\label{eq:red-rec}
-    \AxiomC{$e\sto e\′$}
-    \UnaryInfC{$e.m(\ol{e_a})\sto e\′.m(\ol{e_a})$}
+  \begin{equation*}
+    \name{Rec}\label{eq:red-rec}
+    \AxiomC{$\sto{e}{e\′}$}
+    \UnaryInfC{$\sto{e.m(\ol{e_a})}{e\′.m(\ol{e_a})}$}
     \DisplayProof
-  \end{equation}
+  \end{equation*}
 
-  \begin{equation}
-    \tag{\textsc{R-Arg}}\label{eq:red-arg}
-    \AxiomC{$e\sto e\′$}
-    \UnaryInfC{$O.m(\ol{O}, e, \ol{e_a}) \sto
-      O.m(\ol{O}, e\′, \ol{e_a})$}
+  \begin{equation*}
+    \name{Arg}\label{eq:red-arg}
+    \AxiomC{$\sto{e}{e\′}$}
+    \UnaryInfC{$\sto{O.m(\ol{O},e,\ol{e_a})}{O.m(\ol{O},e\′,\ol{e_a})}$}
     \DisplayProof
-  \end{equation}
+  \end{equation*}
 
-  \begin{equation}
-    \tag{\textsc{R-Req}}\label{eq:red-req}
+  \begin{equation*}
+    \name{Req}\label{eq:red-req}
     \AxiomC{$\method{m}{\ol{x:\tau_p}}{\tau}{e}\in\ol{M}$}
-    \UnaryInfC{$\object{\ol{M}}.m(\ol{O})\sto[\ol{O/x},\object{\ol{M}}/\self]e$}
+    \UnaryInfC{$\sto{\object{\ol{M}}.m(\ol{O})}
+      {[\ol{O/x},\object{\ol{M}}/\self]e}$}
     \DisplayProof
-  \end{equation}
+  \end{equation*}
 
   \caption{Small-step semantics of Tiny Grace reduction}\label{fig:reduction}
 \end{figure}
