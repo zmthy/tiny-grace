@@ -44,13 +44,13 @@ Figure~\ref{fig:abstract-syntax}. The metavariable $M$ ranges over methods; $O$
 over object literals; $x$ and $y$ over variable names; $x$ over both variables;
 $\tau$, $\sigma$ and $\upsilon$ over types; $H$ over method headers, $m$ over
 method names, and $e$ over expressions. We write $\ol{e}$ to indicate a possibly
-empty sequence of comma-separated expressions $e_1, \dots, e_n$, as well as for
-method header parameters $\ol{x : \tau}$. We also write $\ol{H}$ and $\ol{M}$ to
-indicate a possibly empty set of method headers with unique names $H_1 \dots
-H_n$ and $M_1 \dots M_n$ respectively.
+empty sequence of comma-separated expressions $e_1,\dots,e_n$, as well as for
+method header parameters $\ol{x:\tau}$. We also write $\ol{H}$ and $\ol{M}$ to
+indicate a possibly empty set of method headers with unique names
+$\range{H_1}{H_n}$ and $\range{M_1}{M_n}$ respectively.
 
 As an object body is just a sequence of methods, a Tiny Grace program is any
-pair of the form $(\ol{M}, e)$.
+pair of the form $(\ol{M},e)$.
 
 \begin{figure}
   \centering

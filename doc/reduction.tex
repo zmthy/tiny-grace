@@ -3,8 +3,7 @@
 The rules for the reduction relation $\ssr$ are given in
 Figure~\ref{fig:reduction}. The relation is written $\sto{e}{e\′}$, meaning that
 the expression $e$ reduces to $e\′$ in a single small-step reduction step. We
-write $\ssrt$ for the reflexive transitive closure of $\ssr$. The reduction
-$\stot{e}{O}$ is the big-step form of the reduction semantics. Given a Tiny
+write $\ssrt$ for the reflexive transitive closure of $\ssr$. Given a Tiny
 Grace program $(\ol{M},e)$, we can `run' $e$ in the scope of $\ol{M}$ by
 applying the substitution $[\object{\ol{M}}/\self]e$, and then applying $\ssrt$,
 resulting in either an object literal $O$ or divergence.

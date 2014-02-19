@@ -63,6 +63,7 @@
 \newcommand{\self}{\text{\sffamily\upshape{self}}}
 \newcommand{\param}[2]{\text{\lstinline{#1}}:\type{#2}}
 \newcommand{\typeol}[1]{\type{\ol{#1}}}
+\newcommand{\range}[2]{#1\dots#2}
 
 % Small-step reduction relation.
 \newcommand{\ssr}{\longrightarrow}
@@ -96,18 +97,33 @@
 
 % Theorem definitions.
 
-\newtheoremstyle{theorem}{}{1em}{\itshape\addtolength\parskip{.5em}}{}{}{.}
-  {.5em}{\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
-\theoremstyle{theorem}
-\newtheorem{theorem}{Theorem}
+\newcounter{theorems}
+\stepcounter{theorems}
+\newenvironment{theorem}[1]
+  {\let\oldparindent=\parindent\setlength{\parindent}{0em}
+    \textsc{Theorem} \thetheorems\stepcounter{theorems} (#1)\itshape}
+  {\setlength{\parindent}{\oldparindent}}
 
-\newtheoremstyle{lemma}{}{0em}{\itshape\addtolength\leftskip{1em}}{}{}{.}{.5em}
-  {\thmname{\textsc{#1}}\thmnumber{\ #2}\thmnote{\ ({#3})}}
-\theoremstyle{lemma}
-\newtheorem{lemma}{Lemma}[theorem]
+
+\newenvironment{lemma}[1]{}{}
 
 \renewenvironment{proof}
-  {\noindent\upshape\addtolength\parskip{-.5em}\textsc{Proof.}}{\qed}
+  {\vspace{1em}\noindent\upshape\textsc{Proof.}}{\qed}
+
+\newenvironment{iflist}{\vspace{1em}If:
+  \begin{enumerate}[
+    label=\bfseries\upshape\sffamily\alph*.,
+    align=left,
+    labelwidth=2.5em,
+    labelsep=0em,
+    leftmargin=4.5em,
+    topsep=0em,
+    itemsep=0em,
+    parsep=0em
+  ]}{\end{enumerate}}
+\newcommand{\tif}[1]{\begin{iflist}\item#1\end{iflist}}
+\newcommand{\thn}[1]{\par{}then:\par\hspace{2em}#1}
+\newcommand{\tor}[1]{\par{}or:\par\hspace{2em}#1}
 
 \newenvironment{match}{\addtolength\parskip{.5em}}{}
 \newcommand{\case}[2]{\noindent\textsc{Case} #1: $#2$\\}
