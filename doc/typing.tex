@@ -26,15 +26,15 @@ covariant return type.
   \begin{equation*}
     \name{Prg}\label{eq:type-prg}
     \AxiomC{$\object{\ol{\meth{H}{e_b}}}:\typeol{H}$}
-    \AxiomC{$\tjdg{\self : \typeol{H}}{e}{\tau}$}
+    \AxiomC{$\tjdg{\self:\typeol{H}}{e}{\tau}$}
     \BinaryInfC{$\pjdg{\ol{\meth{H}{e_b}}}{e}$}
     \DisplayProof
   \end{equation*}
 
   \begin{equation*}
     \name{Meth}\label{eq:type-meth}
-    \AxiomC{$\tjdg{\G,\ol{x:\tau_p}}{e}{\tau}$}
-    \UnaryInfC{$\gmjdg{\method{m}{\ol{x:\tau_p}}{\tau}{e}}$}
+    \AxiomC{$\tjdg{\G,\ol{x:\tau_p}}{\rete}{\rett}$}
+    \UnaryInfC{$\gmjdg{\method{m}{\ol{x:\tau_p}}{\rett}{\rete}}$}
     \DisplayProof
   \end{equation*}
 
@@ -47,10 +47,9 @@ covariant return type.
 
   \begin{equation*}
     \name{Req}\label{eq:type-req}
-    \AxiomC{$\gtjdg{e}{\typeol{H}}$}
-    \AxiomC{$\header{m}{x}{\tau_p}{\tau}\in\ol{H}$}
-    \AxiomC{$\olgtjdg{e_p}{\tau_p}$}
-    \TrinaryInfC{$\gtjdg{e.m(\ol{e_p})}{\tau}$}
+    \AxiomC{$\gtjdg{\rece}{\type{\header{m}{x}{\prmt}{\rett}\cons{H}}}$}
+    \AxiomC{$\olgtjdg{\prme}{\prmt}$}
+    \BinaryInfC{$\gtjdg{\rece.m(\ol{\prme})}{\rett}$}
     \DisplayProof
   \end{equation*}
 
@@ -73,8 +72,8 @@ covariant return type.
     \AxiomC{$\ol{\sjdg{\prmt\′}{\prmt}}$}
     \AxiomC{$\sjdg{\rett}{\rett\′}$}
     \AxiomC{$\sjdg{\typeol{H}}{\typeol{H\′}}$}
-    \TrinaryInfC{$\sjdg{\type{\header{m}{x}{\prmt}{\rett}~;~\!\ol{H}}}
-      {\type{\header{m}{x\′}{\prmt\′}{\rett\′}~;~\!\ol{H\′}}}$}
+    \TrinaryInfC{$\sjdg{\type{\header{m}{x}{\prmt}{\rett}\cons{H}}}
+      {\type{\header{m}{x\′}{\prmt\′}{\rett\′}\cons{H\′}}}$}
     \DisplayProof
   \end{equation*}
 

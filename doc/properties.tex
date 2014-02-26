@@ -1,159 +1,155 @@
+\clearpage
 \section{Properties}
 
-\begin{theorem}[Progress]\label{th:progress}
-  Given a well-formed program $(\ol{M},e)$, any expression $e\′$ in the
-  relation $e\stot e\′$ is either an object literal $O$ or can be reduced
-  by an application of $\sto$.
+\begin{theorem}{Progress}{prog}
 
-  \begin{lemma}[Substitution Completeness]\label{lem:sub-complete}
-    Substitution on a well-typed term always completes.
-
-    \begin{proof}
-      A well-typed program must have a finite size, which means every branch
-      must bottom out on either a variable, \self, or an empty object literal,
-      all of which terminate substitution. The remaining cases are trivially
-      recursive.
-    \end{proof}
-  \end{lemma}
+  \cond{$\etjdg{e}{\tau}\lbl{cond}$}
+  \then\axiom{$\sto{e}{e\′}$}
+  \tor\axiom{there exists $O$}
+  \where\axiom{$e=O$}
 
   \begin{proof}
-    A well-typed program has no free variables, so $x$ is never encountered in
-    reduction. Inductive steps for method requests $e.m(\ol{e_a})$ and
-    $O.m(\ol{e_a})$ are trivial, so we need only show that a method request
-    $O.m(\ol{O_a})$ can always proceed and will always complete.
-    Rule~\ref{eq:type-obj} guarantees that the requested method always exists in
-    the receiver, which is the only requirement for $\sto$ to be applied to this
-    form of method request. The relation is satisfied as long as the
-    substitution operation produces an outcome, so by
-    Lemma~\ref{lem:sub-complete}, this single step of $\sto$ is guaranteed to
-    complete and produce a new expression $e\′$.
+    \indana{$\etjdg{e}{\tau}$}
+
+    \begin{case}{\ref{eq:type-var}}
+      \step{$\tau=\G(x)$}{\bydef{type-var}}\lbl{var:def}
+      \step{$\G=\emptyset$}{\trf{cond}}\lbl{var:cond}
+      \step{\na}{\bycontra,~\trf{var:def},~\trf{var:cond}}
+    \end{case}
+
+    \begin{case}{\ref{eq:type-req}}
+      \step{$e=\rece.m(\ol{\prme})$}{\bydef{type-req}}
+      \begin{steps}{\byprems{type-req}}
+        \step{$\etjdg{\rece}{\type{\header{m}{x}{\prmt}{\rett}\cons{H}}}$}
+          \lbl{req:rec}
+        \step{$\oletjdg{\prme}{\prmt}$}\lbl{req:prm}
+      \end{steps}
+      \step{$\sto{\rece}{\rece\′}$ or $\ex{O}{\rece=O}$}
+        {\trf{req:rec},~\byind}
+      \step{$\forall{\prme\in\ol{\prme}}:\sto{\prme}{\prme\′}$ or
+        $\ex{O}{\prme=O}$}{\trf{req:prm},~\byind}
+
+      \begin{analysis}{$\rece,\ol{\prme}$}
+        \begin{case}{$\sto{\rece}{\rece\′}$}
+          \done{\byeq{red-recv}}
+        \end{case}
+
+        \begin{case}{$\ex{\prme\in\ol{\prme}}{\sto{\prme}{\prme\′}}$}
+          \done{\byeq{red-prm}}
+        \end{case}
+
+        \begin{case}{$\ex{\recO}{\rece=\recO}$ and
+          $\fa{\prme\in\ol{\prme}}{\ex{\prmO}{\prme=\prmO}}$}
+          \step{$\rece=\object{\method{m}{\ol{x:\prmt}}{\rett}{\rete}\cons{H}}$}
+            {\trf{req:rec},~\byeq{type-obj}}
+            \done{\byeq{red-req}}
+        \end{case}
+      \end{analysis}
+    \end{case}
   \end{proof}
 \end{theorem}
 
-\begin{theorem}[Preservation]\label{th:preservation}
-  If $\gtjdg{e}{\tau}$ and $e\sto e\′$, then $\gtjdg{e\′}{\tau\′}$
-  for some $\tau\′\sub\tau$.
+\begin{lemma}{Subtyping Reflexivity}{sub-refl}
 
-  \begin{lemma}[Subtyping Reflexivity]\label{lem:sub-reflexive}
-    For any type $\tau$, $\tau \sub \tau$.
-
-    \begin{proof}
-      By induction on Rule~\ref{eq:type-sub}. $\etype\sub\etype$ is a
-      derived axiom. For every method $\header{m}{x}{\tau_p}{\tau_r}$ in $\tau$,
-      if $\cjdg{\ol{\tau_p\sub\tau_p},\ol{\tau_r\sub\tau_r}}{\tau\sub\tau}$, then
-      $\tau\sub\tau$. As types cannot be infinite in size, this inductive
-      application is guaranteed to complete at every branch on $\tau=\etype$.
-    \end{proof}
-  \end{lemma}
-
-  \begin{lemma}[Subtyping Transitivity]\label{lem:sub-transitive}
-    \newcommand\ta{\tau^{_a}}
-    \newcommand\tb{\tau^{_b}}
-    \newcommand\tc{\tau^{_c}}
-    \newcommand\xa{x^{_a}}
-    \newcommand\xb{x^{_b}}
-    \newcommand\xc{x^{_c}}
-
-    For any types $\ta$, $\tb$, and $\tc$, if $\ta\sub\tb$ and $\tb\sub\tc$ then
-    $\ta\sub\tc$.
-
-    \begin{proof}
-      By induction on Rule~\ref{eq:type-sub}. For every type $\tau$,
-      $\tau\sub\etype$ is a derived axiom. For every method
-      $\header{m}{\xc}{\tc_p}{\tc_r}$ in $\tc$, there exists a method
-      $\header{m}{\xb}{\tb_p}{\tb_r}$ in $\tb$ where $\ol{\tc_p\sub\tb_p}$ and
-      $\tb_r\sub\tc_r$, and therefore a method $\header{m}{\xa}{\ta_p}{\ta_r}$
-      where $\ol{\tb_p\sub\ta_p}$ and $\ta_r\sub\tb_r$, so if
-      $\ol{\tc_p\sub\tc_p}$ and $\ta_r\sub\tc_r$ then $\ta\sub\tc$. As types
-      cannot be infinite in size, this inductive application is guaranteed to
-      complete at every branch on $\tc = \etype$.
-    \end{proof}
-  \end{lemma}
-
-  \begin{lemma}[Substitution Preservation]\label{lem:preservation}
-    If $\tjdg{\G,x:\tau_x}{e}{\tau}$, and $\gtjdg{O}{\tau_o}$ for any $O$
-    where $\tau_o\sub\tau_x$, then $\gtjdg{[O/x]e}{\tau\′}$ for some
-    $\tau\′\sub\tau$.
-
-    \begin{proof}
-      By induction on the derivation of $\tjdg{\G,x:\tau_x}{e}{\tau}$.
-
-      \begin{match}
-        \case{\ref{eq:sub-var}}{e=x}
-        $\tjdg{\G,x:\tau_x}{x}{\tau_x}$, so $\tau=\tau_x$.
-        $[O/x]x\bto O$ and $\gtjdg{O}{\tau_o}$. $\tau_o\sub\tau_x$, so
-        $\tau_o\sub\tau$.
-
-        \case{\ref{eq:sub-none}}{e=y~\mathbf{where}~y\neq{x}}
-        $[O/x]y\bto y$ and $\gtjdg{y}{\tau}$. By
-        Lemma~\ref{lem:sub-reflexive}, $\tau\sub\tau$.
-
-        \case{\ref{eq:sub-req}}{e=e_r.m (\ol{e_a})}
-        $\G\vdash e_r:\tau_r,\ol{e_a:\tau_a}$. By induction, $[O/x]e_r\bto
-        e_r\′$ and $\ol{[O/x]e_a\bto e_a\′}$ with $\G,x:\tau_x\vdash
-        e_r\′:\tau_r\′,\ol{e\′_a:\tau_a\′}$ where $\tau_r\′\sub\tau_r$ and
-        $\ol{\tau_a\′\sub\tau_a}$. By Rule~\ref{eq:type-req}, there exists a
-        method with head $m(\ol{x_p:\tau_p})\to\tau$ in $\tau_r$ where
-        $\ol{\tau_a\sub\tau_p}$. As $\tau_r\′\sub\tau_r$, by
-        Rule~\ref{eq:type-sub} and there exists a method with head
-        $m(\ol{x_p\′:\tau_p\′})\to\tau\′$ in $\tau_r\′$ where
-        $\ol{\tau_p\sub\tau_p\′}$ and $\tau\′\sub\tau$. $\ol{\tau_a\sub\tau_p}$ and
-        $\ol{\tau_p\sub\tau_p\′}$, so by Lemma~\ref{lem:sub-transitive},
-        $\ol{\tau_a\sub\tau_p\′}$. Then by Rule~\ref{eq:type-req},
-        $\gtjdg{e_r\′.m(e_a\′)}{\tau\′}$.
-
-        \case{\ref{eq:sub-obj}}
-          {e=\object{\ol{\method{m}{\ol{x_p:\tau_p}}{\tau_s}{e_b}}},x=x}
-        By Rule~\ref{eq:type-req},
-        $\ol{\tjdg{\G,\ol{x_p:\tau_p}}{e_b}{\tau_b}}$ where
-        $\tau_b\sub\tau_s$. $x\notin\ol{x_p}$, so by induction $\*[O/x]e_b\bto
-        e_b\′*$ with $\ol{\tjdg{\G,\ol{x_p:\tau_p}}{e_b\′}{\tau_b\′}}$ where
-        $\ol{\tau_b\′\sub\tau_b}$.  As $\ol{\tau_b\′\sub\tau_b}$ and
-        $\ol{\tau_b\sub\tau_s}$, by Lemma~\ref{lem:sub-transitive},
-        $\ol{\tau_b\′\sub\tau_s}$. As the types of the methods have not changed,
-        $\gtjdg{\object{\ol{\method{m}{\ol{x_p:\tau_p}}{\tau_s}{e_b\′}}}}
-        {\tau}$, and by Lemma~\ref{lem:sub-reflexive}, $\tau\sub\tau$.
-
-        \case{\ref{eq:sub-self}}{e = \object{\ol{M_i}}, x= \self}
-        $[O/\self]\object{\ol{M}}\bto\object{\ol{M}}$ and
-        $\gtjdg{\object{\ol{M}}}{\tau}$. By Lemma~\ref{lem:sub-reflexive},
-        $\tau\sub\tau$.
-      \end{match}
-    \end{proof}
-  \end{lemma}
+  \axiom{$\fa{\tau}{\sjdg{\tau}{\tau}}$}
 
   \begin{proof}
-    By induction on a derivation of $e\sto e\′$. The inductive steps for
-    \textsc{R-Rec} and \textsc{R-Arg} are trivial, so only \textsc{R-Req}
-    remains.
-%
-    \begin{align*}
-      &e=\object{\ol{M}}.m(\ol{O_a})
-      &\method{m}{\ol{x_p:\tau_p}}{\tau}{e_b}\in\ol{M}\\
-      &e\′=[\ol{O_a/x_p},\object{\ol{M}}/\self]e_b&
-    \end{align*}
-
-    \noindent By Rules~\ref{eq:type-req} and~\ref{eq:type-obj}, for some types
-    $\ol{\tau_a}$ we have $\G\vdash\ol{O_a:\tau_a}$ and $\ol{\tau_a\sub\tau_p}$. By
-    Rule~\ref{eq:type-meth}, $\tjdg{\G,\ol{x_p:\tau_p}}{e_b}{\tau_b}$ where
-    $\tau_b\sub\tau$. By Lemma~\ref{lem:preservation}, $\gtjdg{e\′}{\tau_b\′}$
-    where $\tau_b\′\sub\tau$, and so by Lemma~\ref{lem:sub-transitive},
-    $\tau_b\′\sub\tau$.
+    \ind{$\sub$}
   \end{proof}
-\end{theorem}
 
-\begin{theorem}[Type Soundness]\label{th:type-soundness}
-  If $\gtjdg{e}{\tau}$ and $e\stot e\′$ with $e\′$ in normal form
-  (there is no $e^{\prime\prime}$ such that $e\′\sto e^{\prime\prime}$),
-  then $e\′$ is an object literal $O$ with $\gtjdg{O}{\tau\′}$ where
-  $\tau\′\sub\tau$.
+\end{lemma}
+
+\begin{lemma}{Subtyping Transitivity}{sub-trans}
+
+  \begin{conds}
+    \cond{$\sjdg{\tau_a}{\tau_b}$}
+    \cond{$\sjdg{\tau_b}{\tau_c}$}
+  \end{conds}
+
+  \then\axiom{$\sjdg{\tau_a}{\tau_c}$}
 
   \begin{proof}
-    Immediate from Theorems~\ref{th:progress} and~\ref{th:preservation}.
+    \ind{\sub}
   \end{proof}
+
+\end{lemma}
+
+\begin{lemma}{Term Substitution Preserves Typing}{sst-pres}
+
+  \begin{conds}
+    \cond{$\tjdg{\G,x:\tau\′}{e}{\tau}$}
+    \cond{$\gtjdg{O}{\tau\′}$}
+  \end{conds}
+
+  \then\axiom{$\gtjdg{[O/x]e}{\tau}$}
+
+  \begin{proof}
+    \ind{$\tjdg{\G,x:\tau\′}{e}{\tau}$}
+  \end{proof}
+
+\end{lemma}
+
+\begin{theorem}{Subject Reduction}{pres}
+
+  \begin{conds}
+    \cond{$\etjdg{e}{\tau}$}
+    \cond{$\sto{e}{e\′}$}
+  \end{conds}
+
+  \then\axiom{$\etjdg{e\′}{\tau}$}
+
+  \begin{proof}
+    \indana{$\sto{e}{e\′}$}
+
+    \begin{case}{\ref{eq:red-recv}}
+      \step{$e=\rece.m(\prme)$}{\bydef{red-recv}}
+      \step{$\sto{\rece}{\rece\′}$}{\byprem{red-recv}}\lbl{recv:prem}
+      \step{$\etjdg{\rece\′}{\rect}$}{\trf{recv:prem},~\byind}
+      \done{\byeq{type-req}}
+    \end{case}
+
+    \begin{case}{\ref{eq:red-prm}}
+      \step{$e=\recO.m(\prme)$}{\bydef{red-prm}}
+      \step{$\sto{\prme}{\prme\′}$}{\byprem{red-prm}}\lbl{prm:prem}
+      \step{$\etjdg{\prme\′}{\prmt}$}{\trf{prm:prem},~\byind}
+      \done{\byeq{type-req}}
+    \end{case}
+
+    \begin{case}{\ref{eq:red-req}}
+      \begin{steps}{\bydef{red-req}}
+        \step{$e=\objectol{M}.m(\prme)$}
+        \step{$e\′=[\recO/\self,\ol{\prmO/x}]\rete$}
+      \end{steps}
+      \step{$\method{m}{\ol{x:\prmt}}{\rett}{\rete}\in\ol{M}$}{\byprem{red-req}}
+      \step{$\tau=\rett$}{\byeq{type-req}}
+      \step{$\tjdg{\self:\typeol{H},\ol{x:\prmt}}{\rete}{\rett}$}
+        {\bypremss{type-obj}{type-meth}}
+      \done{\bylem{sst-pres}}
+    \end{case}
+
+  \end{proof}
+
 \end{theorem}
 
-\noindent This proves that for any Tiny Grace program $(\ol{M}, e)$, if
-$\pjdg{\ol{M}}{e}$, then the program will always successfully run to the
-production of an appropriate object literal or continue indefinitely.
+\begin{theorem}{Type Soundness}{sound}
+
+  \begin{conds}
+    \cond{$\pjdg{\ol{M}}{e}$}
+    \cond{$\tjdg{\self:\typeol{M}}{e}{\tau}$}\lbl{type}
+    \cond{$\stot{[\objectol{M}/\self]e}{e\′}$ with $e\′$ a normal form}
+  \end{conds}
+
+  \then\axiom{there exists $O$}
+  \where
+    \axiom{$e\′=O$}
+    \axiom{$\etjdg{O}{\tau}$}
+
+  \begin{proof}
+    \vspace{.5em}
+    \step{$\etjdg{[\objectol{M}/\self]e}{\tau}$}
+      {\trf{type},~\bylem{sst-pres}}
+    \done{\bythh{prog}{pres}}
+  \end{proof}
+
+\end{theorem}
 

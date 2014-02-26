@@ -17,22 +17,33 @@
 
 % Math definitions.
 
+\newcommand{\ex}[2]{\exists#1.~#2}
+\newcommand{\fa}[2]{\forall#1.~#2}
+
 % Environment definitions.
+\renewcommand{\emptyset}{\varnothing}
 \newcommand{\G}{\Gamma}
 \newcommand{\tjdg}[3]{#1\vdash#2:#3}
 \newcommand{\gtjdg}[2]{\tjdg{\G}{#1}{#2}}
+\newcommand{\etjdg}[2]{\tjdg{\emptyset}{#1}{#2}}
 \newcommand{\oltjdg}[3]{#1\vdash\ol{#2:#3}}
 \newcommand{\olgtjdg}[2]{\oltjdg{\G}{#1}{#2}}
+\newcommand{\oletjdg}[2]{\oltjdg{\emptyset}{#1}{#2}}
 \newcommand{\cjdg}[2]{#1\mid#2}
 \newcommand{\sjdg}[2]{#1\sub#2}
 \newcommand{\mjdg}[2]{#1\vdash#2~\checkmark}
 \newcommand{\gmjdg}[1]{\mjdg{\G}{#1}}
 \newcommand{\pjdg}[2]{(#1, #2)~\checkmark}
 
-% Type shorthands.
+% Subscript shorthands.
 \newcommand{\prmt}{\tau_p}
-\newcommand{\rett}{\tau_m}
-\newcommand{\rect}{\tau_r}
+\newcommand{\rett}{\tau_r}
+\newcommand{\rect}{\tau_s}
+\newcommand{\prme}{e_p}
+\newcommand{\rete}{e_r}
+\newcommand{\rece}{e_s}
+\newcommand{\recO}{O_s}
+\newcommand{\prmO}{O_p}
 
 % Multiplicities with overline.
 \newcommand{\ol}[1]{\overline{#1}}
@@ -62,8 +73,10 @@
 \newcommand{\header}[4]{#1\po\ol{#2:#3}\pc\to#4}
 \newcommand{\self}{\text{\sffamily\upshape{self}}}
 \newcommand{\param}[2]{\text{\lstinline{#1}}:\type{#2}}
+\newcommand{\objectol}[1]{\object{\ol{#1}}}
 \newcommand{\typeol}[1]{\type{\ol{#1}}}
 \newcommand{\range}[2]{#1\dots#2}
+\newcommand{\cons}[1]{~;~\!\ol{#1}}
 
 % Small-step reduction relation.
 \newcommand{\ssr}{\longrightarrow}
@@ -97,36 +110,81 @@
 
 % Theorem definitions.
 
-\newcounter{theorems}
-\stepcounter{theorems}
-\newenvironment{theorem}[1]
+\newcounter{theorem}
+\newenvironment{theorem}[2]
   {\let\oldparindent=\parindent\setlength{\parindent}{0em}
-    \textsc{Theorem} \thetheorems\stepcounter{theorems} (#1)\itshape}
-  {\setlength{\parindent}{\oldparindent}}
+    \textsc{Theorem}~\refstepcounter{theorem}\thetheorem~(#1)\label{th:#2}
+    \newcommand{\lbl}[1]{\label{th:#2:##1}}
+    \newcommand{\trf}[1]{\ref{th:#2:##1}}\vspace{1em}}
+  {\setlength{\parindent}{\oldparindent}\vspace{1em}}
 
+\newcounter{lemma}
+\newenvironment{lemma}[2]
+  {\let\oldparindent=\parindent\setlength{\parindent}{0em}
+    \textsc{Lemma}~\refstepcounter{lemma}\thelemma~(#1)\label{lem:#2}
+    \newcommand{\lbl}[1]{\label{lem:#2:##1}}
+    \newcommand{\trf}[1]{\ref{lem:#2:##1}}\vspace{1em}}
+  {\setlength{\parindent}{\oldparindent}\vspace{1em}}
 
-\newenvironment{lemma}[1]{}{}
+\newenvironment{proof}
+  {\vspace{1em}\noindent\textsc{Proof.}\stepcounter{steps}}{}
 
-\renewenvironment{proof}
-  {\vspace{1em}\noindent\upshape\textsc{Proof.}}{\qed}
+\newcounter{conds}
+\newcounter{cond}[conds]
+\renewcommand{\thecond}{\bf\alph{cond}}
+\newenvironment{conds}
+  {\textit{If:}\stepcounter{conds}
+    \renewcommand{\cond}[1]{\par\hspace{2em}\numbox{cond}{\thecond}##1}}{}
 
-\newenvironment{iflist}{\vspace{1em}If:
-  \begin{enumerate}[
-    label=\bfseries\upshape\sffamily\alph*.,
-    align=left,
-    labelwidth=2.5em,
-    labelsep=0em,
-    leftmargin=4.5em,
-    topsep=0em,
-    itemsep=0em,
-    parsep=0em
-  ]}{\end{enumerate}}
-\newcommand{\tif}[1]{\begin{iflist}\item#1\end{iflist}}
-\newcommand{\thn}[1]{\par{}then:\par\hspace{2em}#1}
-\newcommand{\tor}[1]{\par{}or:\par\hspace{2em}#1}
+\newcommand{\cond}[1]{\begin{conds}\cond{#1}\end{conds}}
+\newcommand{\then}{\par\textit{then:}}
+\newcommand{\where}{\par\textit{where:}}
+\newcommand{\tor}{\par\textit{or:}}
+\newcommand{\axiom}[1]{\par\hspace{2em}#1}
 
-\newenvironment{match}{\addtolength\parskip{.5em}}{}
-\newcommand{\case}[2]{\noindent\textsc{Case} #1: $#2$\\}
+\newcommand{\listindent}{\addtolength\leftskip{2em}}
 
-\newenvironment{scope}{}{}
+\newcounter{steps}
+\newenvironment{case}[1]
+  {\vspace{.5em}\textit{Case} #1\vspace{.5em}\stepcounter{steps}\par
+    \listindent}{\par}
+\newenvironment{analysis}[1]
+  {\vspace{.5em}Case analysis on #1:\par
+    \renewcommand{\thestep}{\bf\roman{step}}}{}
+
+\newcommand{\stepwidth}{.55\textwidth}
+\newcommand{\numwidth}{2.5em}
+
+\newcounter{step}[steps]
+\renewcommand{\thestep}{\bf\arabic{step}}
+
+\newcommand{\numbox}[2]{\refstepcounter{#1}\makebox[\numwidth][l]{#2.}}
+\newcommand{\stepnum}{\numbox{step}{\thestep}}
+
+\newcommand{\step}[2]{\par\stepnum\makebox[\stepwidth][l]{#1}by #2}
+
+\newsavebox{\stepsby}
+\newenvironment{steps}[1]
+  {\savebox{\stepsby}{#1}
+    \renewcommand{\step}[1]{\stepnum\makebox[\stepwidth][l]{##1}}
+    \par\begin{math}\left.\hspace{-.1em}\begin{minipage}{\numwidth+\stepwidth}}
+    {\end{minipage}\right\}\end{math} by \usebox{\stepsby}\par}
+
+\newcommand{\na}{case N/A}
+\newcommand{\done}[1]{\step{done}{#1}}
+\newcommand{\byeq}[1]{\ref{eq:#1}}
+\newcommand{\bydef}[1]{def~\ref{eq:#1}}
+\newcommand{\byind}{ind hyp}
+\newcommand{\bycontra}{contradiction}
+\newcommand{\byprem}[1]{premise of~\ref{eq:#1}}
+\newcommand{\byprems}[1]{premises of~\ref{eq:#1}}
+\newcommand{\bypremss}[2]{premises of~\ref{eq:#1},~\ref{eq:#2}}
+\newcommand{\bylem}[1]{lemma~\ref{lem:#1}}
+\newcommand{\bylems}[2]{lemmas~\ref{lem:#1},~\ref{lem:#2}}
+\newcommand{\byth}[1]{theorem~\ref{th:#1}}
+\newcommand{\bythh}[2]{theorems~\ref{th:#1},~\ref{th:#2}}
+
+\newcommand{\indmsg}[1]{induction on the derivation of #1}
+\newcommand{\ind}[1]{By straightforward \indmsg{#1}.}
+\newcommand{\indana}[1]{By \indmsg{#1}, with a case analysis on the last step:}
 
