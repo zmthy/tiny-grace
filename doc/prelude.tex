@@ -23,10 +23,11 @@
 % Environment definitions.
 \renewcommand{\emptyset}{\varnothing}
 \newcommand{\G}{\Gamma}
-\newcommand{\tjdg}[3]{#1\vdash#2:#3}
+\newcommand{\stjdg}[2]{#1\vdash#2}
+\newcommand{\tjdg}[3]{\stjdg{#1}{#2:#3}}
 \newcommand{\gtjdg}[2]{\tjdg{\G}{#1}{#2}}
 \newcommand{\etjdg}[2]{\tjdg{\emptyset}{#1}{#2}}
-\newcommand{\oltjdg}[3]{#1\vdash\ol{#2:#3}}
+\newcommand{\oltjdg}[3]{\stjdg{#1}{\ol{#2:#3}}}
 \newcommand{\olgtjdg}[2]{\oltjdg{\G}{#1}{#2}}
 \newcommand{\oletjdg}[2]{\oltjdg{\emptyset}{#1}{#2}}
 \newcommand{\cjdg}[2]{#1\mid#2}
@@ -44,6 +45,7 @@
 \newcommand{\rece}{e_s}
 \newcommand{\recO}{O_s}
 \newcommand{\prmO}{O_p}
+\newcommand{\prmx}{x_p}
 
 % Multiplicities with overline.
 \newcommand{\ol}[1]{\overline{#1}}
@@ -161,6 +163,7 @@
 \newcommand{\numbox}[2]{\refstepcounter{#1}\makebox[\numwidth][l]{#2.}}
 \newcommand{\stepnum}{\numbox{step}{\thestep}}
 
+\newcommand{\slet}[1]{\par\stepnum\textup{let}~#1}
 \newcommand{\step}[2]{\par\stepnum\makebox[\stepwidth][l]{#1}by #2}
 
 \newsavebox{\stepsby}
@@ -176,6 +179,8 @@
 \newcommand{\bydef}[1]{def~\ref{eq:#1}}
 \newcommand{\byind}{ind hyp}
 \newcommand{\bycontra}{contradiction}
+\newcommand{\bysubst}{substitution}
+\newcommand{\byrewrite}{Barendregt}
 \newcommand{\byprem}[1]{premise of~\ref{eq:#1}}
 \newcommand{\byprems}[1]{premises of~\ref{eq:#1}}
 \newcommand{\bypremss}[2]{premises of~\ref{eq:#1},~\ref{eq:#2}}

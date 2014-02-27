@@ -3,13 +3,17 @@
 
 \begin{theorem}{Progress}{prog}
 
-  \cond{$\etjdg{e}{\tau}\lbl{cond}$}
+  \cond{$\etjdg{e}{\tau}$}\lbl{cond}
   \then\axiom{$\sto{e}{e\′}$}
   \tor\axiom{there exists $O$}
   \where\axiom{$e=O$}
 
   \begin{proof}
     \indana{$\etjdg{e}{\tau}$}
+
+    \begin{case}{\ref{eq:type-obj}}
+      \done{\bydef{type-obj}}
+    \end{case}
 
     \begin{case}{\ref{eq:type-var}}
       \step{$\tau=\G(x)$}{\bydef{type-var}}\lbl{var:def}
@@ -49,44 +53,84 @@
   \end{proof}
 \end{theorem}
 
-\begin{lemma}{Subtyping Reflexivity}{sub-refl}
+%\begin{lemma}{Subtyping Reflexivity}{sub-refl}
 
-  \axiom{$\fa{\tau}{\sjdg{\tau}{\tau}}$}
+  %\axiom{$\fa{\tau}{\sjdg{\tau}{\tau}}$}
 
-  \begin{proof}
-    \ind{$\sub$}
-  \end{proof}
+  %\begin{proof}
+    %\ind{$\sub$}
+  %\end{proof}
 
-\end{lemma}
+%\end{lemma}
 
-\begin{lemma}{Subtyping Transitivity}{sub-trans}
+%\begin{lemma}{Subtyping Transitivity}{sub-trans}
 
-  \begin{conds}
-    \cond{$\sjdg{\tau_a}{\tau_b}$}
-    \cond{$\sjdg{\tau_b}{\tau_c}$}
-  \end{conds}
+  %\begin{conds}
+    %\cond{$\sjdg{\tau_a}{\tau_b}$}
+    %\cond{$\sjdg{\tau_b}{\tau_c}$}
+  %\end{conds}
 
-  \then\axiom{$\sjdg{\tau_a}{\tau_c}$}
+  %\then\axiom{$\sjdg{\tau_a}{\tau_c}$}
 
-  \begin{proof}
-    \ind{\sub}
-  \end{proof}
+  %\begin{proof}
+    %\ind{\sub}
+  %\end{proof}
 
-\end{lemma}
+%\end{lemma}
 
 \begin{lemma}{Term Substitution Preserves Typing}{sst-pres}
 
   \begin{conds}
-    \cond{$\tjdg{\G,x:\tau\′}{e}{\tau}$}
-    \cond{$\gtjdg{O}{\tau\′}$}
+    \cond{$\tjdg{\G,x:\tau\′}{e}{\tau}$}\lbl{cond:etype}
+    \cond{$\gtjdg{O}{\tau\′}$}\lbl{cond:otype}
   \end{conds}
 
   \then\axiom{$\gtjdg{[O/x]e}{\tau}$}
 
   \begin{proof}
-    \ind{$\tjdg{\G,x:\tau\′}{e}{\tau}$}
-  \end{proof}
+    \indana{$\tjdg{\G,x:\tau\′}{e}{\tau}$}
 
+    \begin{case}{\ref{eq:type-var}}
+      \step{$e=y$}{\bydef{type-var}}
+
+      \begin{analysis}{$y$}
+        \begin{case}{$x=y$}
+          \step{$\tau=\tau\′$}{\trf{cond:etype}}\lbl{var:eq}
+          \step{$[O/x]e=O$}{\bysubst}
+          \done{\trf{var:eq},~\trf{cond:otype}}
+        \end{case}
+
+        \begin{case}{$x\neq{y}$}
+          \step{$\gtjdg{e}{\tau}$}{\byeq{type-var}}\lbl{var:type}
+          \step{$[O/x]e=e$}{\bysubst}\lbl{var:subst}
+          \done{\trf{var:type},~\trf{var:subst}}
+        \end{case}
+      \end{analysis}
+    \end{case}
+
+    \begin{case}{\ref{eq:type-req}}
+      \step{$e=\rece.m(\ol{\prme})$}{\bydef{type-req}}
+      \step{$\stjdg{\G,x:\tau\′}{\rece:\rect,\ol{\prme:\prmt}}$}
+        {\byprems{type-req}}\lbl{req:parts}
+      \step{$\stjdg{\G}{[O/x]\rece:\rect,\ol{[O/x]\prme:\prmt}}$}
+        {\byind,~\trf{req:parts}}\lbl{req:subst}
+      \step{$[O/x]e=([O/x]\rece).m(\ol{[O/x]\prme})$}{\bysubst}
+      \done{\byeq{type-req},~\trf{req:subst}}
+    \end{case}
+
+    \begin{case}{\ref{eq:type-obj}}
+      \step{$e=\objectol{\method{m}{\ol{\prmx:\prmt}}{\rett}{\rete}}$}
+        {\bydef{type-obj}}
+      \slet{$\rect=\typeol{\header{m}{\prmx}{\prmt}{\rett}}$}
+      \step{$\tjdg{\G,x:\tau\′,\self:\rect,\ol{\prmx:\prmt}}{\rete}{\rett}$}
+        {\bypremss{type-obj}{type-meth}}\lbl{obj:part}
+      \step{$\gtjdg{[O/x]\rete}{\rett}$}{\byind,~\trf{obj:part}}\lbl{obj:subst}
+      \step{$x\notin\self,\ol{\prmx}$}{\byrewrite}\lbl{obj:rewrite}
+      \step{$[O/x]e=\objectol{\cdots\oc{[O/x]\rete}}$}
+        {\bysubst,~\trf{obj:rewrite}}
+      \done{\byeq{type-obj},~\trf{obj:subst}}
+    \end{case}
+  \end{proof}
 \end{lemma}
 
 \begin{theorem}{Subject Reduction}{pres}
