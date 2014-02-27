@@ -119,14 +119,19 @@
     \end{case}
 
     \begin{case}{\ref{eq:type-obj}}
-      \step{$e=\objectol{\method{m}{\ol{\prmx:\prmt}}{\rett}{\rete}}$}
-        {\bydef{type-obj}}
-      \slet{$\rect=\typeol{\header{m}{\prmx}{\prmt}{\rett}}$}
-      \step{$\tjdg{\G,x:\tau\′,\self:\rect,\ol{\prmx:\prmt}}{\rete}{\rett}$}
-        {\bypremss{type-obj}{type-meth}}\lbl{obj:part}
-      \step{$\gtjdg{[O/x]\rete}{\rett}$}{\byind,~\trf{obj:part}}\lbl{obj:subst}
-      \step{$x\notin\self,\ol{\prmx}$}{\byrewrite}\lbl{obj:rewrite}
-      \step{$[O/x]e=\objectol{\cdots\oc{[O/x]\rete}}$}
+      \step{$e=\objectol{\meth{H}{\rete}}$}{\bydef{type-obj}}
+
+      \begin{for}
+          {$\method{m}{\ol{\prmx:\prmt}}{\rett}{\rete}\in\ol{\meth{H}{\rete}}$}
+        \step{$x\notin\self,\ol{\prmx}$}{\byrewrite}\lbl{obj:rewrite}
+        \step{$\tjdg{\G,x:\tau\′,\self:\typeol{H},\ol{\prmx:\prmt}}
+            {\rete}{\rett}$}
+          {\bypremss{type-obj}{type-meth}}\lbl{obj:part}
+        \step{$\gtjdg{[O/x]\rete}{\rett}$}
+          {\byind,~\trf{obj:part}}\lbl{obj:subst}
+      \end{for}
+
+      \step{$[O/x]e=\objectol{\meth{H}{[O/x]\rete}}$}
         {\bysubst,~\trf{obj:rewrite}}
       \done{\byeq{type-obj},~\trf{obj:subst}}
     \end{case}

@@ -154,7 +154,7 @@
   {\vspace{.5em}Case analysis on #1:\par
     \renewcommand{\thestep}{\bf\roman{step}}}{}
 
-\newcommand{\stepwidth}{.55\textwidth}
+\newcommand{\stepwidth}{.62\textwidth-\leftskip}
 \newcommand{\numwidth}{2.5em}
 
 \newcounter{step}[steps]
@@ -171,7 +171,10 @@
   {\savebox{\stepsby}{#1}
     \renewcommand{\step}[1]{\stepnum\makebox[\stepwidth][l]{##1}}
     \par\begin{math}\left.\hspace{-.1em}\begin{minipage}{\numwidth+\stepwidth}}
-    {\end{minipage}\right\}\end{math} by \usebox{\stepsby}\par}
+  {\end{minipage}\right\}\end{math} by \usebox{\stepsby}\par}
+
+\newenvironment{for}[1]{\vspace{.5em}\textit{for all}~#1\par\listindent}
+  {\par\vspace{.5em}}
 
 \newcommand{\na}{case N/A}
 \newcommand{\done}[1]{\step{done}{#1}}
