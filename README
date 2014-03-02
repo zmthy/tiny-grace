@@ -1,4 +1,5 @@
 A formalism and mechanisation of a subset of the Grace programming language.
 
 /doc - The formalism. Run make to generate tiny-grace.pdf.
+/talk - The presentation. Run make to generate tiny-grace-0.1-talk.pdf.
 
